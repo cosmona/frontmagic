@@ -1,97 +1,100 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import noneCard from "../../Media/nonecard.png"
+import "./Cartas.css"
 
-function Cartas(props) {
-	const { ColorRed, ColorBlack, ColorGreen, ColorWhite, ColorBlue } =
-		props.filters;
-	const [cards, setCards] = useState([]);
-	const [page, setPage] = useState(1);
-	const containerRef = useRef(null);
-	let colorIdentity;
-	useEffect(() => {
-		setCards([]);
-		setPage(1);
-	}, [ColorBlack, ColorBlue, ColorGreen, ColorRed, ColorWhite]);
-	useEffect(() => {
-		const fetchCards = async () => {
-			try {
-				if (ColorRed) {
-					colorIdentity = "R";
-				}
-				if (ColorBlack) {
-					colorIdentity = "B";
-				}
-				if (ColorGreen) {
-					colorIdentity = "G";
-				}
-				if (ColorWhite) {
-					colorIdentity = "W";
-				}
-				if (ColorBlue) {
-					colorIdentity = "U";
-				}
-				if (
-					!ColorBlack &&
-					!ColorBlue &&
-					!ColorGreen &&
-					!ColorRed &&
-					!ColorWhite
-				) {
-					colorIdentity = null;
-				}
-				const response = await axios.get(
-					`https://api.magicthegathering.io/v1/cards`,
-					{
-						params: {
-							page: page,
-							pageSize: 10,
-							colorIdentity: colorIdentity ? colorIdentity : "",
-						},
-					}
-				);
-				setCards((prevCards) => [...prevCards, ...response.data.cards]);
-				console.log("response", response.data.cards);
-			} catch (error) {
-				console.error(error);
-			}
-		};
+function Cartas() {
+  const [cards, setCards] = useState([]);
+  const [page, setPage]= useState(1);
+  const [loading, setLoading] = useState(true);
+  const [current, setCurrent] = useState(0);
 
-		const handleScroll = () => {
-			const { scrollTop, clientHeight, scrollHeight } =
-				containerRef.current;
-			if (scrollTop + clientHeight >= scrollHeight - 100) {
-				setPage((prevPage) => prevPage + 1);
-			}
-		};
+/*   useEffect(() => {
+    fetchCards();
+  }, []); */
 
-		fetchCards();
+  useEffect(() => {
+    fetchCards();
+  }, [page]);
 
-		window.addEventListener("scroll", handleScroll);
-		return () => {
-			window.removeEventListener("scroll", handleScroll);
-		};
-	}, [page, ColorRed, ColorBlack, ColorGreen, ColorWhite, ColorBlue]);
+  const fetchCards = async () => {
+    try {
+      const response = await axios.get(
+        "https://api.magicthegathering.io/v1/cards",
+        {
+          params: {
+            page: page,
+            pageSize: 10,
+            colorIdentity: "",
+          },
+        }
+      );
+      setCards(response.data.cards);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-	return (
-		<div ref={containerRef}>
-			{cards.map((card) => (
-				<div>
-					{card.foreignNames &&
-						card.foreignNames.map((item, index) => {
-							if (item.language === "Spanish") {
-								console.log("item", item);
-								return (
-									<>
-										<div>{item.name}</div>
-										<img src={item.imageUrl} alt={index} />
-									</>
-								);
-							}
-						})}
-				</div>
-			))}
-		</div>
-	);
+  const handleNext = () => {
+	if (current<9){
+		setCurrent(current + 1);
+	} else{
+		setCurrent(0);
+		setPage(page + 1)
+	}
+  };
+
+  const handleLast = () => {
+	if (current>0){
+		setCurrent(current - 1);
+	} else{
+		setCurrent(9);
+		setPage(page - 1)
+	}  };
+
+  return (
+    <div>
+      {!loading ? (
+        <>
+          {cards[current].foreignNames ? (
+            cards[current].foreignNames.map((item, index) => {
+				console.log('current', current)
+              if (item.language === "Spanish") {
+                console.log("item", item);
+                return (
+                  <div key={index}>
+					<div className="Content-Direction">
+						<div onClick={handleLast}>◀️</div>
+						<div onClick={handleNext}>▶️</div>
+					</div>
+                    <div>{item.name}</div>
+					{item.imageUrl ? (
+                      <img src={item.imageUrl} alt={index} />
+                    ) : (
+                      <img src={noneCard} alt="noneCard" />
+                    )}
+                  </div>
+                );
+              } else {
+				return null
+			  }
+            })):(
+					<div>
+					 <div className="Content-Direction">
+						<div onClick={handleLast}>◀️</div>
+						<div onClick={handleNext}>▶️</div>
+					</div>
+					  <div>{cards[current].name}</div>
+                      <img src={noneCard} alt="noneCard" />
+                   	</div>
+			)}
+        </>
+      ) : (
+        <div>Loading...</div>
+      )}
+    </div>
+  );
 }
 
 export default Cartas;

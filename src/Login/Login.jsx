@@ -21,7 +21,6 @@ function Login(props) {
 		e.preventDefault();
 		setStatus("loading");
 
-		console.log("email", email);
 		const res = await fetch(
 			"http://localhost:" + process.env.REACT_APP_PORT + "/users/login/",
 			{
