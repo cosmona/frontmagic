@@ -1,0 +1,7 @@
+.LoginForm {
+	display: flex;
+	flex-direction: column;
+	width: 90vw;
+	margin-top: 100px;
+	align-items: center;
+}
