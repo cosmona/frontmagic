@@ -4,41 +4,35 @@ import { useState } from "react";
 import ModalLogin from "./Login/ModalLogin";
 import Cartas from "./Components/Cartas/Cartas";
 import Filtros from "./Components/Filtros/Filtros";
+import MazoConstructor from "./Components/MazoConstructor/MazoConstructor";
+import Mazos from "./Components/Mazos/Mazos";
 
 function App() {
 	const [showLogin, setShowLogin] = useState(false);
 	const [showSignUp, setShowSignUp] = useState(false);
-	const [ColorRed, setColorRed] = useState(false);
-	const [ColorBlack, setColorBlack] = useState(false);
-	const [ColorGreen, setColorGreen] = useState(false);
-	const [ColorWhite, setColorWhite] = useState(false);
-	const [ColorBlue, setColorBlue] = useState(false);
+
+	const [filters, setFilters] = useState([
+		{
+			ColorRed: false,
+			ColorBlack: false,
+			ColorGreen: false,
+			ColorWhite: false,
+			ColorBlue: false,
+		},
+	]);
 
 	return (
 		<div className="App">
-			<header className="App-header">
-				<Header
-					setShowLogin={setShowLogin}
-					setShowSignUp={setShowSignUp}
-				/>
-			</header>
-			<Filtros
-				setColorRed={setColorRed}
-				setColorBlack={setColorBlack}
-				setColorGreen={setColorGreen}
-				setColorWhite={setColorWhite}
-				setColorBlue={setColorBlue}
-			/>
+			<Header setShowLogin={setShowLogin} setShowSignUp={setShowSignUp} />
+			<Filtros filters={filters} setFilters={setFilters} />
 			<section className="View">
-				<Cartas
-					filters={{
-						ColorRed,
-						ColorBlack,
-						ColorGreen,
-						ColorWhite,
-						ColorBlue,
-					}}
-				/>
+				<Cartas filters={filters} />
+			</section>
+			<section>
+				<Mazos />
+			</section>
+			<section>
+				<MazoConstructor />
 			</section>
 			<ModalLogin show={showLogin} setShowLogin={setShowLogin} />
 		</div>

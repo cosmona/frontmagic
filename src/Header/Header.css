@@ -1,22 +1,34 @@
+.App-header {
+	background-color: #282c34;
+	height: 50px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	font-size: calc(10px + 2vmin);
+	color: white;
+	align-items: flex-end;
+}
+
 .appHeader {
-  background-color: #040a5c;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #d46c77;
+	background-color: #040a5c;
+	padding: 1rem;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	color: #d46c77;
 }
 
 .headerName {
-  text-decoration: none;
-  color: #d46c77;
+	text-decoration: none;
+	color: #d46c77;
 }
 
 .signupNav {
-  text-decoration: none;
-  padding: 5px;
-  border: 2px solid rgb(143, 106, 3);
-  border-radius: 25%;
-  background-color: rgb(219, 213, 196);
-  color: #d46c77;
+	text-decoration: none;
+	padding: 5px;
+	border: 2px solid rgb(143, 106, 3);
+	border-radius: 25%;
+	background-color: rgb(219, 213, 196);
+	color: #d46c77;
 }

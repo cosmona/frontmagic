@@ -1,0 +1,18 @@
+.menu-MazoConsructor {
+	display: flex;
+	flex-direction: row;
+	background-color: rgba(16, 16, 100, 0.81);
+	color: white;
+}
+.list-MazoConstructor {
+	list-style: none;
+}
+
+.Buttons {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	/* margin: 0 auto; */
+	width: 100%;
+	justify-content: space-between;
+}

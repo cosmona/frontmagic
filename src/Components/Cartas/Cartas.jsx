@@ -1,100 +1,141 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import axios from "axios";
-import noneCard from "../../Media/nonecard.png"
-import "./Cartas.css"
+import noneCard from "../../Media/nonecard.png";
+import "./Cartas.css";
+import AddButtons from "../AddButtons/AddButtons";
+import { handleNext, handleLast } from "../../Helpers/Helpers";
+import { obtenerLetras } from "../../Helpers/Helpers";
+import Swipe from "../Swipe/Swipe";
 
-function Cartas() {
-  const [cards, setCards] = useState([]);
-  const [page, setPage]= useState(1);
-  const [loading, setLoading] = useState(true);
-  const [current, setCurrent] = useState(0);
+function Cartas({ filters }) {
+	const { ColorRed, ColorBlack, ColorGreen, ColorWhite, ColorBlue } =
+		filters[0];
 
-/*   useEffect(() => {
-    fetchCards();
-  }, []); */
+	const [cards, setCards] = useState([]);
+	const [page, setPage] = useState(1);
+	const [loading, setLoading] = useState(true);
+	const [current, setCurrent] = useState(0);
 
-  useEffect(() => {
-    fetchCards();
-  }, [page]);
+	const fetchCards = async () => {
+		setLoading(true);
+		try {
+			const letrasComb = obtenerLetras(filters[0]);
 
-  const fetchCards = async () => {
-    try {
-      const response = await axios.get(
-        "https://api.magicthegathering.io/v1/cards",
-        {
-          params: {
-            page: page,
-            pageSize: 10,
-            colorIdentity: "",
-          },
-        }
-      );
-      setCards(response.data.cards);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+			const response = await axios.get(
+				"https://api.magicthegathering.io/v1/cards",
+				{
+					params: {
+						page: page,
+						pageSize: 10,
+						colorIdentity: letrasComb,
+					},
+				}
+			);
+			setCards(response.data.cards);
+			setLoading(false);
+		} catch (error) {
+			console.error(error);
+		}
+	};
+	const myElementRef = useRef(null);
 
-  const handleNext = () => {
-	if (current<9){
-		setCurrent(current + 1);
-	} else{
-		setCurrent(0);
-		setPage(page + 1)
-	}
-  };
+	useEffect(() => {
+		fetchCards();
+	}, [page, ColorRed, ColorBlack, ColorGreen, ColorBlue, ColorWhite]);
 
-  const handleLast = () => {
-	if (current>0){
-		setCurrent(current - 1);
-	} else{
-		setCurrent(9);
-		setPage(page - 1)
-	}  };
+	const buscarObjeto = () => {
+		const objeto = cards[current].foreignNames.find((objeto) => {
+			if (objeto.language === "Spanish") {
+				return objeto;
+			}
+			return false;
+		});
+		return objeto;
+	};
 
-  return (
-    <div>
-      {!loading ? (
-        <>
-          {cards[current].foreignNames ? (
-            cards[current].foreignNames.map((item, index) => {
-				console.log('current', current)
-              if (item.language === "Spanish") {
-                console.log("item", item);
-                return (
-                  <div key={index}>
+	const foundSpanishCard = () => {
+		const objetoEncontrado = buscarObjeto();
+		if (objetoEncontrado) {
+			return (
+				<Swipe
+					current={current}
+					setCurrent={setCurrent}
+					imageUrl={objetoEncontrado.imageUrl}
+					setPage={setPage}
+					page={page}
+				/>
+			);
+		} else {
+			return (
+				<Swipe
+					current={current}
+					setCurrent={setCurrent}
+					setPage={setPage}
+					page={page}
+					imageUrl={cards[current].imageUrl}
+				/>
+			);
+		}
+	};
+
+	return (
+		<Fragment>
+			{!loading ? (
+				<Fragment>
+					{`${current}/${page}`}
 					<div className="Content-Direction">
-						<div onClick={handleLast}>◀️</div>
-						<div onClick={handleNext}>▶️</div>
+						{/* Si esta en la pagina 1 y en la carta priera oculta el boton*/}
+						{current === 0 && page === 1 ? null : (
+							<Fragment>
+								<div
+									onClick={() =>
+										handleLast(
+											current,
+											setCurrent,
+											setPage,
+											page
+										)
+									}
+								>
+									◀️
+								</div>
+							</Fragment>
+						)}
+						<div
+							onClick={() =>
+								handleNext(current, setCurrent, setPage, page)
+							}
+						>
+							▶️
+						</div>
 					</div>
-                    <div>{item.name}</div>
-					{item.imageUrl ? (
-                      <img src={item.imageUrl} alt={index} />
-                    ) : (
-                      <img src={noneCard} alt="noneCard" />
-                    )}
-                  </div>
-                );
-              } else {
-				return null
-			  }
-            })):(
-					<div>
-					 <div className="Content-Direction">
-						<div onClick={handleLast}>◀️</div>
-						<div onClick={handleNext}>▶️</div>
+					<div className="wrapper">
+						<div>{cards[current].name}</div>
+						{cards[current].foreignNames ? (
+							foundSpanishCard()
+						) : (
+							<Swipe
+								current={current}
+								setCurrent={setCurrent}
+								setPage={setPage}
+								page={page}
+								imageUrl={noneCard}
+							/>
+						)}
+						<AddButtons
+							current={current}
+							setCurrent={setCurrent}
+							setPage={setPage}
+							page={page}
+							carta={cards[current]}
+						/>
 					</div>
-					  <div>{cards[current].name}</div>
-                      <img src={noneCard} alt="noneCard" />
-                   	</div>
+				</Fragment>
+			) : (
+				<div>Loading...</div>
 			)}
-        </>
-      ) : (
-        <div>Loading...</div>
-      )}
-    </div>
-  );
+		</Fragment>
+	);
 }
 
 export default Cartas;

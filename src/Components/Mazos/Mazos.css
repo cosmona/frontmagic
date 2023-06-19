@@ -1,0 +1,11 @@
+.ListaMazos {
+	list-style: none;
+	display: flex;
+	flex-wrap: wrap;
+}
+
+.Card {
+	border: 1px solid black;
+	padding: 5px;
+	margin: 0 2px;
+}
