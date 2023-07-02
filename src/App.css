@@ -7,3 +7,10 @@
 .App-link {
 	color: #61dafb;
 }
+
+.View {
+	margin-top: 120px;
+	height: 47vh;
+	display: flex;
+	justify-content: center;
+}

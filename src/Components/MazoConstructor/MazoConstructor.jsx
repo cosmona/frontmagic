@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
 	cardRemoveAll,
@@ -8,13 +8,11 @@ import {
 } from "../../store";
 import "./MazoConstructor.css";
 
-function MazoConstructor() {
+function MazoConstructor({ mazo, setMazo }) {
 	const [isLista, setLista] = useState(true);
 	const [status, setStatus] = useState("");
-	const [mazo, setMazo] = useState(useSelector((state) => state.cardview));
 
 	const dispatch = useDispatch();
-
 	// Verifica si el estado 'mazo' está vacío o nulo
 	if (!mazo) {
 		return <div>No hay mazos disponibles.</div>;
@@ -45,7 +43,6 @@ function MazoConstructor() {
 		if (newData) {
 			token = newData.data.token;
 		}
-		console.log("mazo", mazo);
 		if (mazo.IDMazo) {
 			//Update
 		} else {
@@ -67,7 +64,6 @@ function MazoConstructor() {
 				}
 			)
 				.then((res) => {
-					console.log("res", res);
 					if (!res.ok) {
 						return res.text().then((text) => {
 							throw new Error(text);
@@ -157,9 +153,9 @@ function MazoConstructor() {
 				{mazo.Cards.map((mazoItem, index) => (
 					<li key={index}>
 						{isLista ? (
-							mazoItem.name
+							mazoItem.Name
 						) : (
-							<img src={mazoItem.imageUrl} alt={index} />
+							<img src={mazoItem.ImageURL} alt={index} />
 						)}
 
 						<button onClick={() => handleRemoveMazo(index)}>

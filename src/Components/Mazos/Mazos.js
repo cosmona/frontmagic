@@ -75,9 +75,7 @@ function Mazos() {
 
 			const data = await res.json();
 			const dataConIdMazo = { IDMazo: IdMazo, Cards: [data.mazos.Cards] };
-			console.log("dataConIdMazo", dataConIdMazo);
 			setCardView(dataConIdMazo); // Actualiza el estado con los mazos recibidos
-			console.log("cardView", cardView);
 			dispatch(cardAdd(dataConIdMazo));
 		} catch (err) {
 			console.log("Error:", err);
@@ -85,7 +83,6 @@ function Mazos() {
 	};
 
 	const handleLoadingMazo = (IdMazo) => {
-		console.log("IdMazo", IdMazo);
 		//Borra Store
 		dispatch(cardRemoveAll());
 		// Carga mazo

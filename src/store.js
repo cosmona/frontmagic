@@ -53,8 +53,6 @@ const cardViewSlize = createSlice({
 		},
 		cardAdd: (state, action) => {
 			const { Cards, IDMazo } = action.payload;
-			console.log("IDMazo", IDMazo);
-			console.log("Cards", Cards);
 
 			if (Cards.length !== 0) {
 				const nuevosObjetos = Cards.map((item) => {

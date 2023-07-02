@@ -2,18 +2,19 @@ function Filtros({ filters, setFilters }) {
 	return (
 		<div>
 			<form>
-				<label>Filtros</label>
 				<input
 					type="checkbox"
 					name="Rojo"
 					id="R"
 					onChange={() =>
 						setFilters((prevFilters) => {
-							// Crear una copia del estado anterior
-							const newFilters = [...prevFilters];
-
-							// Modificar el elemento específico
-							newFilters[0].ColorRed = true;
+							// Crear una nueva copia del estado anterior y actualizar ColorRed
+							const newFilters = prevFilters.map((filter) => {
+								return {
+									...filter,
+									ColorRed: !filter.ColorRed,
+								};
+							});
 
 							// Devolver el nuevo estado actualizado
 							return newFilters;
@@ -27,11 +28,13 @@ function Filtros({ filters, setFilters }) {
 					id="B"
 					onChange={() =>
 						setFilters((prevFilters) => {
-							// Crear una copia del estado anterior
-							const newFilters = [...prevFilters];
-
-							// Modificar el elemento específico
-							newFilters[0].ColorBlack = true;
+							// Crear una nueva copia del estado anterior y actualizar ColorRed
+							const newFilters = prevFilters.map((filter) => {
+								return {
+									...filter,
+									ColorBlack: !filter.ColorBlack,
+								};
+							});
 
 							// Devolver el nuevo estado actualizado
 							return newFilters;
@@ -45,11 +48,13 @@ function Filtros({ filters, setFilters }) {
 					id="G"
 					onChange={() =>
 						setFilters((prevFilters) => {
-							// Crear una copia del estado anterior
-							const newFilters = [...prevFilters];
-
-							// Modificar el elemento específico
-							newFilters[0].ColorGreen = true;
+							// Crear una nueva copia del estado anterior y actualizar ColorRed
+							const newFilters = prevFilters.map((filter) => {
+								return {
+									...filter,
+									ColorGreen: !filter.ColorGreen,
+								};
+							});
 
 							// Devolver el nuevo estado actualizado
 							return newFilters;
@@ -63,11 +68,13 @@ function Filtros({ filters, setFilters }) {
 					id="W"
 					onChange={() =>
 						setFilters((prevFilters) => {
-							// Crear una copia del estado anterior
-							const newFilters = [...prevFilters];
-
-							// Modificar el elemento específico
-							newFilters[0].ColorWhite = true;
+							// Crear una nueva copia del estado anterior y actualizar ColorRed
+							const newFilters = prevFilters.map((filter) => {
+								return {
+									...filter,
+									ColorWhite: !filter.ColorWhite,
+								};
+							});
 
 							// Devolver el nuevo estado actualizado
 							return newFilters;
@@ -81,11 +88,13 @@ function Filtros({ filters, setFilters }) {
 					id="U"
 					onChange={() =>
 						setFilters((prevFilters) => {
-							// Crear una copia del estado anterior
-							const newFilters = [...prevFilters];
-
-							// Modificar el elemento específico
-							newFilters[0].ColorBlue = true;
+							// Crear una nueva copia del estado anterior y actualizar ColorRed
+							const newFilters = prevFilters.map((filter) => {
+								return {
+									...filter,
+									ColorBlue: !filter.ColorBlue,
+								};
+							});
 
 							// Devolver el nuevo estado actualizado
 							return newFilters;

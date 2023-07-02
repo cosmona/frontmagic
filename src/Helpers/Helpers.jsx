@@ -37,3 +37,23 @@ export const obtenerLetras = (filters) => {
 
 	return letras.join(",");
 };
+
+export const obtenerRarity = (filters) => {
+	const { Common, Uncommon, Rare, Mythic } = filters;
+	const rarity = [];
+
+	if (Common) {
+		rarity.push("Common");
+	}
+	if (Uncommon) {
+		rarity.push("Uncommon");
+	}
+	if (Rare) {
+		rarity.push("Rare");
+	}
+	if (Mythic) {
+		rarity.push("Mythic");
+	}
+
+	return rarity.join(" ");
+};
