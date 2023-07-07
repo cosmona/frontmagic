@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import "./Mazos.css";
-import { cardAdd, mazoRemoveAll, cardRemoveAll } from "../../store";
+import {
+	cardAdd,
+	mazoRemoveAll,
+	cardRemoveAll,
+	mazoListAdd,
+} from "../../store";
 
-function Mazos() {
-	const [mazos, setMazos] = useState([]);
+function Mazos({ mazos }) {
 	const [cardView, setCardView] = useState({});
 
 	const newData = JSON.parse(
@@ -21,10 +25,6 @@ function Mazos() {
 	useEffect(() => {
 		fetchMazos();
 	}, []);
-
-	useEffect(() => {
-		console.log("cardView actualizado:", cardView);
-	}, [cardView]);
 
 	const fetchMazos = async () => {
 		try {
@@ -45,7 +45,9 @@ function Mazos() {
 			}
 
 			const data = await res.json();
-			setMazos(data.mazos); // Actualiza el estado con los mazos recibidos
+			dispatch(mazoRemoveAll());
+			console.log("data.mazos", data.mazos);
+			dispatch(mazoListAdd(data.mazos));
 		} catch (err) {
 			console.log("Error:", err);
 		}
@@ -74,8 +76,10 @@ function Mazos() {
 			}
 
 			const data = await res.json();
-			const dataConIdMazo = { IDMazo: IdMazo, Cards: [data.mazos.Cards] };
+			console.log("data", data);
+			const dataConIdMazo = { IDMazo: IdMazo, Cards: data.mazos };
 			setCardView(dataConIdMazo); // Actualiza el estado con los mazos recibidos
+			console.log("dataConIdMazo", dataConIdMazo);
 			dispatch(cardAdd(dataConIdMazo));
 		} catch (err) {
 			console.log("Error:", err);

@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { useSprings, animated } from "@react-spring/web";
+import { useSprings, animated, interpolate } from "@react-spring/web";
 import { useDrag } from "react-use-gesture";
 import axios from "axios";
 import noneCard from "../../Media/nonecard.png";
@@ -21,10 +21,10 @@ const to = (i) => ({
 
 const from = (_i) => ({ x: 0, rot: 0, scale: 1.5, y: -1000 });
 
-/* const trans = (r, s) =>
+const trans = (r, s) =>
 	`perspective(1500px) rotateX(30deg) rotateY(${
 		r / 10
-	}deg) rotateZ(${r}deg) scale(${s})`; */
+	}deg) rotateZ(${r}deg) scale(${s})`;
 
 function Deck({ status, setStatus, filters }) {
 	const {
@@ -71,9 +71,12 @@ function Deck({ status, setStatus, filters }) {
 				params.rarity = rarityFilter;
 			}
 
+			console.log("page", page);
 			params.page = page;
 			params.pageSize = 10;
 
+			console.log("url", url);
+			console.log("params", params);
 			const response = await axios.get(url, { params });
 			setCards(response.data.cards);
 			setStatus("Cargado");
@@ -84,9 +87,9 @@ function Deck({ status, setStatus, filters }) {
 
 	useEffect(() => {
 		fetchCards();
+
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
-		page,
 		ColorRed,
 		ColorBlack,
 		ColorGreen,
@@ -98,7 +101,9 @@ function Deck({ status, setStatus, filters }) {
 		Mythic,
 	]);
 
-	useEffect(() => {}, [filters]);
+	useEffect(() => {
+		fetchCards();
+	}, [page]);
 
 	const buscarObjeto = () => {
 		const objeto = cards[current].foreignNames.find((objeto) => {
@@ -110,35 +115,10 @@ function Deck({ status, setStatus, filters }) {
 		return objeto;
 	};
 
-	const handleAddStore = (Name, ImageURL, ID, ManaCost) => {
-		dispatch(cardAddOne({ Name, ImageURL, ID, ManaCost }));
+	const handleAddStore = ({ name, imageUrl, id, manaCost }) => {
+		console.log("handleAddStore", name);
+		dispatch(cardAddOne({ name, imageUrl, id, manaCost }));
 	};
-
-	/* const foundSpanishCard = () => {
-		const objetoEncontrado = buscarObjeto();
-		if (objetoEncontrado) {
-			return (
-				<Swipe
-					current={current}
-					setCurrent={setCurrent}
-					imageUrl={objetoEncontrado.imageUrl}
-					setPage={setPage}
-					page={page}
-				/>
-			);
-		} else {
-			return (
-				<Swipe
-					current={current}
-					setCurrent={setCurrent}
-					setPage={setPage}
-					page={page}
-					imageUrl={cards[current].imageUrl}
-				/>
-			);
-		}
-	};
- */
 
 	const bind = useDrag(
 		({
@@ -156,6 +136,8 @@ function Deck({ status, setStatus, filters }) {
 			api.start((i) => {
 				if (index !== i) return;
 				const isGone = gone.has(index);
+
+				console.log("window.innerWidth", window.innerWidth);
 				const x = isGone
 					? (200 + window.innerWidth) * dir
 					: down
@@ -163,16 +145,9 @@ function Deck({ status, setStatus, filters }) {
 					: 0;
 				const rot = mx / 100 + (isGone ? dir * 10 * velocity : 0);
 				const scale = down ? 1.1 : 1;
-
-				if (x >= 575) {
-					// Aquí puedes realizar las acciones que deseas al detectar el desplazamiento hacia la derecha
-					handleAddStore(
-						cards[index].name,
-						cards[index].imageUrl,
-						cards[index].id,
-						cards[index].manaCost
-					);
-				}
+				console.log("cards[index]", cards[index]);
+				console.log("x", x);
+				if (x >= 664 && isGone) handleAddStore(cards[index]);
 
 				return {
 					x,
@@ -189,10 +164,18 @@ function Deck({ status, setStatus, filters }) {
 			if (!down && gone.size === cards.length) {
 				setTimeout(() => {
 					gone.clear();
-					setPage(page + 1);
 					fetchCards();
 					api.start((i) => to(i));
 				}, 600);
+
+				if (index === 0) {
+					setPage((prevPage) => {
+						console.log("prevPage", prevPage);
+
+						return prevPage + 1;
+					}); // Utiliza la función de actualización de estado para incrementar el valor de page
+					console.log("Suma", page);
+				}
 			}
 		}
 	);
@@ -201,18 +184,34 @@ function Deck({ status, setStatus, filters }) {
 		"<Loading />"
 	) : (
 		<>
-			{props.map(({ x, y, rot, scale }, i) => (
-				<animated.div className={styles.deck} key={i} style={{ x, y }}>
-					<animated.div
-						{...bind(i)}
-						style={{
-							backgroundImage: `url(${
-								cards[i].imageUrl ? cards[i].imageUrl : noneCard
-							})`,
-						}}
-					/>
-				</animated.div>
-			))}
+			{cards.length > 0 && (
+				<Fragment>
+					<div className={styles.deck}>
+						{props.map(({ x, y, rot, scale }, i) => (
+							<animated.div
+								className={styles.card}
+								key={i}
+								style={{
+									x,
+									y,
+									transform: interpolate([rot, scale], trans),
+								}}
+								{...bind(i)}
+							>
+								<div
+									style={{
+										backgroundImage: `url(${
+											cards[i].imageUrl
+												? cards[i].imageUrl
+												: noneCard
+										})`,
+									}}
+								/>
+							</animated.div>
+						))}
+					</div>
+				</Fragment>
+			)}
 		</>
 	);
 }

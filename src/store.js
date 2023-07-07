@@ -1,6 +1,6 @@
 import { configureStore, createSlice } from "@reduxjs/toolkit";
 import { save, load } from "redux-localstorage-simple";
-import { composeWithDevTools } from "redux-devtools-extension";
+import produce from "immer";
 
 const userSlice = createSlice({
 	name: "user",
@@ -11,32 +11,39 @@ const userSlice = createSlice({
 	},
 });
 
+export const { userLogin, userLogout } = userSlice.actions;
+
 const mazoSlize = createSlice({
-	name: "mazo",
+	name: "mazos",
 	initialState: [],
 	reducers: {
-		mazoAdd: (state, action) => {
-			const { ID, NameMazo, User } = action.payload;
-			const nuevoObjeto = { ID, NameMazo, User };
+		mazoListAdd: (state, action) => {
+			const nuevoObjeto = action.payload;
+			nuevoObjeto.map((item) => state.push(item));
+		},
+
+		mazoAddOne: (state, action) => {
+			const nuevoObjeto = action.payload;
 			state.push(nuevoObjeto);
 		},
 
 		mazoRemove: (state, action) => {
-			const index = action.payload;
-			if (index >= 0 && index < state.length) {
-				state.splice(index, 1);
-			}
+			const IDMazo = action.payload;
 		},
 		mazoRemoveAll: (state) => {
 			state.length = 0; // Borra todos los elementos del estado
 		},
 	},
 });
-export const { mazoAdd, mazoRemove, mazoRemoveAll } = mazoSlize.actions;
+
+export const { mazoListAdd, mazoRemove, mazoRemoveAll, mazoAddOne } =
+	mazoSlize.actions;
+
 const initialState = {
 	Cards: [],
 	IDMazo: null,
 };
+
 const cardViewSlize = createSlice({
 	name: "cardview",
 	initialState,
@@ -45,48 +52,47 @@ const cardViewSlize = createSlice({
 			const nuevaCarta = action.payload;
 			state.Cards.push(nuevaCarta);
 		},
+
+		cardRemove: (state, action) => {
+			const index = action.payload;
+			console.log("state.Cards.length", state.Cards.length);
+			if (index >= 0 && index < state.Cards.length) {
+				state.Cards.splice(index, 1);
+			}
+		},
+
 		idMazoAdd: (state, action) => {
 			const { idMazo, Cards } = action.payload;
 			const newState = { Cards, IDMazo: idMazo };
 			state.Cards = newState.Cards; // Asignar Cards directamente
 			state.IDMazo = newState.IDMazo; // Asignar IDMazo directamente
 		},
+
 		cardAdd: (state, action) => {
 			const { Cards, IDMazo } = action.payload;
-
-			if (Cards.length !== 0) {
-				const nuevosObjetos = Cards.map((item) => {
-					const { ID, IDcarta, IDmazo, Name, ImageURL } = item;
-					return { ID, IDcarta, IDmazo, Name, ImageURL };
-				});
-
-				const newState = { ...nuevosObjetos, ...{ IDMazo: IDMazo } };
-				state.push(newState);
-			} else {
-				const newState = { IDMazo: IDMazo };
-				state.push(newState);
-			}
+			state.IDMazo = IDMazo;
+			state.Cards = Cards;
 		},
+
 		cardRemoveAll: (state) => {
-			console.log("state", state);
 			state.Cards = [];
 			state.IDMazo = null;
 			state.length = 0; // Borra todos los elementos del estado
 		},
 	},
 });
-export const { cardAdd, cardRemoveAll, cardAddOne, idMazoAdd } =
+
+export const { cardAdd, cardRemoveAll, cardAddOne, idMazoAdd, cardRemove } =
 	cardViewSlize.actions;
 
-export const { userLogin, userLogout } = userSlice.actions;
-
 const option = {
-	states: ["user", "mazo", "cardview"],
+	states: ["user", "mazos", "cardview"],
 };
+
 const store = configureStore({
 	reducer: {
 		user: userSlice.reducer,
-		mazo: mazoSlize.reducer,
+		mazos: mazoSlize.reducer,
 		cardview: cardViewSlize.reducer,
 	},
 	preloadedState: load(option),

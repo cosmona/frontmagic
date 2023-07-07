@@ -15,6 +15,7 @@ function App() {
 	const [showSignUp, setShowSignUp] = useState(false);
 	const [status, setStatus] = useState("");
 	const mazo = useSelector((state) => state.cardview); // Actualizamos mazo directamente usando useSelector
+	const mazos = useSelector((state) => state.mazos); // Actualizamos mazo directamente usando useSelector
 
 	const [filters, setFilters] = useState([
 		{
@@ -30,9 +31,8 @@ function App() {
 		},
 	]);
 
-	useEffect(() => {
-		console.log("Filters", filters);
-	}, [mazo, filters]);
+	useEffect(() => {}, [mazo, filters]);
+	useEffect(() => {}, [mazos]);
 
 	return (
 		<div className="App">
@@ -43,7 +43,7 @@ function App() {
 				<Deck status={status} setStatus={setStatus} filters={filters} />
 			</section>
 			<section>
-				<Mazos />
+				<Mazos mazos={mazos} />
 			</section>
 			<section>
 				<MazoConstructor mazo={mazo} />

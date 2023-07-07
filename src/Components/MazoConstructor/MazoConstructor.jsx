@@ -5,7 +5,11 @@ import {
 	idMazoAdd,
 	mazoRemove,
 	mazoRemoveAll,
+	cardRemove,
+	mazoListAdd,
+	mazoAddOne,
 } from "../../store";
+
 import "./MazoConstructor.css";
 
 function MazoConstructor({ mazo, setMazo }) {
@@ -13,36 +17,39 @@ function MazoConstructor({ mazo, setMazo }) {
 	const [status, setStatus] = useState("");
 
 	const dispatch = useDispatch();
-	// Verifica si el estado 'mazo' está vacío o nulo
-	if (!mazo) {
-		return <div>No hay mazos disponibles.</div>;
-	}
 
+	//! Borra una carta del cardView
 	const handleRemoveMazo = (index) => {
-		dispatch(mazoRemove(index));
+		dispatch(cardRemove(index));
 	};
 
+	//!Controla la vista si es lista o galeria
 	const handleListaView = () => {
 		setLista(!isLista);
 	};
 
+	//!Vacia la cardView
 	const handleListaDelete = () => {
-		dispatch(mazoRemoveAll());
+		dispatch(cardRemoveAll());
 	};
 
+	//! Salva un mazo nuevo
 	const handleListaSave = async (e) => {
-		// Call sethShow from parent(setShowLogin) function and set to false for close the modal
-
 		e.preventDefault();
 		setStatus("Saving");
+
 		//*Agarra el token del local storage
 		const newData = JSON.parse(
 			localStorage.getItem("redux_localstorage_simple_user")
 		);
+
 		let token;
 		if (newData) {
 			token = newData.data.token;
+			console.log("token", token);
 		}
+
+		//* Si existe el mazo update sino crea uno nuevo
 		if (mazo.IDMazo) {
 			//Update
 		} else {
@@ -70,12 +77,20 @@ function MazoConstructor({ mazo, setMazo }) {
 						});
 					} else {
 						res.json().then((data) => {
+							//* Añade el IDMAzo y las cartas a la store.cardview
 							dispatch(
 								idMazoAdd({
 									Cards: mazo.Cards,
 									idMazo: data.questionID,
 								})
 							);
+							//* Añade el mazo a la store.mazos
+							const nuevoObjeto = {
+								ID: data.questionID,
+								NameMazo: "kjahjk",
+								User: 1,
+							};
+							dispatch(mazoAddOne(nuevoObjeto));
 						});
 					}
 				})
@@ -85,8 +100,13 @@ function MazoConstructor({ mazo, setMazo }) {
 		}
 	};
 
+	//! Borra el mazo
 	const handleMazoDelete = async (IDmazo) => {
+		//* Borra toda la store.cardview
 		dispatch(cardRemoveAll());
+		//* Borra el mazo la store.mazos
+		dispatch(mazoRemove(IDmazo));
+
 		setStatus("Saving");
 		//*Agarra el token del local storage
 		const newData = JSON.parse(
@@ -118,6 +138,7 @@ function MazoConstructor({ mazo, setMazo }) {
 					});
 				} else {
 					res.json().then((data) => {});
+					dispatch(mazoRemoveAll());
 				}
 			})
 			.catch((err) => {
@@ -130,6 +151,7 @@ function MazoConstructor({ mazo, setMazo }) {
 		<div className="content-MazoConstructor">
 			<header>
 				<h2>
+					{console.log("mazo", mazo)}
 					Cartas del Mazo -{mazo.IDMazo} - {mazo.Cards.length}
 				</h2>
 			</header>
@@ -153,9 +175,9 @@ function MazoConstructor({ mazo, setMazo }) {
 				{mazo.Cards.map((mazoItem, index) => (
 					<li key={index}>
 						{isLista ? (
-							mazoItem.Name
+							mazoItem.name
 						) : (
-							<img src={mazoItem.ImageURL} alt={index} />
+							<img src={mazoItem.imageUrl} alt={index} />
 						)}
 
 						<button onClick={() => handleRemoveMazo(index)}>
