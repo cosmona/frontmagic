@@ -1,6 +1,14 @@
+import React from "react";
+
 import "./ModalLogin.css";
 
-function MagicModal(props) {
+interface MagicModalProps {
+	title: string;
+	show: boolean;
+	children: React.ReactNode;
+}
+
+function MagicModal(props: MagicModalProps): React.JSX.Element {
 	const { title, show } = props;
 
 	return (

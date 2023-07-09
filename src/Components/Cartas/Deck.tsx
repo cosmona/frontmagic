@@ -8,10 +8,15 @@ import Swipe from "../Swipe/Swipe";
 import { useDispatch } from "react-redux";
 import { cardAddOne } from "../../store";
 
-import styles from "./Deck.styles.module.css";
+import "./Deck.css";
 import Loading from "../Loading/Loading";
-
-const to = (i) => ({
+interface CardData {
+	name: string;
+	imageUrl: string;
+	id: string;
+	manaCost: string;
+}
+const to = (i: number) => ({
 	x: 0,
 	y: i * -4,
 	scale: 1,
@@ -19,14 +24,20 @@ const to = (i) => ({
 	delay: i * 100,
 });
 
-const from = (_i) => ({ x: 0, rot: 0, scale: 1.5, y: -1000 });
+const from = (_i: number) => ({ x: 0, rot: 0, scale: 1.5, y: -1000 });
 
-const trans = (r, s) =>
+const trans = (r: number, s: number) =>
 	`perspective(1500px) rotateX(30deg) rotateY(${
 		r / 10
 	}deg) rotateZ(${r}deg) scale(${s})`;
 
-function Deck({ status, setStatus, filters }) {
+interface DeckProps {
+	status: string;
+	setStatus: React.Dispatch<React.SetStateAction<string>>;
+	filters: any[];
+}
+
+function Deck({ status, setStatus, filters }: DeckProps) {
 	const {
 		ColorRed,
 		ColorBlack,
@@ -40,11 +51,11 @@ function Deck({ status, setStatus, filters }) {
 	} = filters[0];
 
 	const dispatch = useDispatch();
-	const [cards, setCards] = useState([]);
+	const [cards, setCards] = useState<any[]>([]);
 	const [page, setPage] = useState(1);
 	const [loading, setLoading] = useState(true);
 	const [current, setCurrent] = useState(0);
-	const [gone] = useState(() => new Set());
+	const gone = useState<Set<number>>(new Set())[0];
 
 	const [props, api] = useSprings(cards.length, (i) => ({
 		...to(i),
@@ -61,7 +72,7 @@ function Deck({ status, setStatus, filters }) {
 
 			let url = "https://api.magicthegathering.io/v1/cards?";
 
-			const params = {};
+			const params: any = {};
 
 			if (letrasComb) {
 				params.colorIdentity = letrasComb;
@@ -71,12 +82,9 @@ function Deck({ status, setStatus, filters }) {
 				params.rarity = rarityFilter;
 			}
 
-			console.log("page", page);
 			params.page = page;
 			params.pageSize = 10;
 
-			console.log("url", url);
-			console.log("params", params);
 			const response = await axios.get(url, { params });
 			setCards(response.data.cards);
 			setStatus("Cargado");
@@ -87,8 +95,6 @@ function Deck({ status, setStatus, filters }) {
 
 	useEffect(() => {
 		fetchCards();
-
-		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		ColorRed,
 		ColorBlack,
@@ -106,7 +112,7 @@ function Deck({ status, setStatus, filters }) {
 	}, [page]);
 
 	const buscarObjeto = () => {
-		const objeto = cards[current].foreignNames.find((objeto) => {
+		const objeto = cards[current].foreignNames.find((objeto: any) => {
 			if (objeto.language === "Spanish") {
 				return objeto;
 			}
@@ -115,9 +121,9 @@ function Deck({ status, setStatus, filters }) {
 		return objeto;
 	};
 
-	const handleAddStore = ({ name, imageUrl, id, manaCost }) => {
+	const handleAddStore = ({ name, imageUrl, id, manaCost }: CardData) => {
 		console.log("handleAddStore", name);
-		dispatch(cardAddOne({ name, imageUrl, id, manaCost }));
+		dispatch(cardAddOne({ name, imageUrl, id }));
 	};
 
 	const bind = useDrag(
@@ -137,7 +143,6 @@ function Deck({ status, setStatus, filters }) {
 				if (index !== i) return;
 				const isGone = gone.has(index);
 
-				console.log("window.innerWidth", window.innerWidth);
 				const x = isGone
 					? (200 + window.innerWidth) * dir
 					: down
@@ -145,8 +150,7 @@ function Deck({ status, setStatus, filters }) {
 					: 0;
 				const rot = mx / 100 + (isGone ? dir * 10 * velocity : 0);
 				const scale = down ? 1.1 : 1;
-				console.log("cards[index]", cards[index]);
-				console.log("x", x);
+
 				if (x >= 664 && isGone) handleAddStore(cards[index]);
 
 				return {
@@ -169,27 +173,23 @@ function Deck({ status, setStatus, filters }) {
 				}, 600);
 
 				if (index === 0) {
-					setPage((prevPage) => {
-						console.log("prevPage", prevPage);
-
-						return prevPage + 1;
-					}); // Utiliza la función de actualización de estado para incrementar el valor de page
-					console.log("Suma", page);
+					setPage((prevPage) => prevPage + 1);
 				}
 			}
 		}
 	);
 
 	return status === "Loading" ? (
-		"<Loading />"
+		<Loading />
 	) : (
 		<>
+			{console.log("cards", cards)}
 			{cards.length > 0 && (
 				<Fragment>
-					<div className={styles.deck}>
+					<div className="deck">
 						{props.map(({ x, y, rot, scale }, i) => (
 							<animated.div
-								className={styles.card}
+								className="card"
 								key={i}
 								style={{
 									x,

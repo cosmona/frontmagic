@@ -1,13 +1,20 @@
+import React from "react";
+
 import "./NavbarLoginSignup.css";
 
-function NavbarLoginSignup(props) {
-	const { setShowLogin, setShowSignUp } = props;
+interface NavbarLoginSignupProps {
+	setShowLogin: (show: boolean) => void;
+}
+
+function NavbarLoginSignup(props: NavbarLoginSignupProps) {
+	const { setShowLogin } = props;
+
 	const handleClickLogin = () => {
 		setShowLogin(true);
 	};
-	const handleClickSignUp = () => {
-		setShowSignUp(true);
-	};
+
+	const handleClickSignUp = () => {};
+
 	return (
 		<div className="NavbarLoginSignup">
 			<div className="Login" onClick={() => handleClickLogin()}>

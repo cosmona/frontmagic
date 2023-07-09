@@ -1,5 +1,7 @@
 import "./App.css";
 import Header from "./Header/Header";
+import React from "react";
+
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 
@@ -14,8 +16,8 @@ function App() {
 	const [showLogin, setShowLogin] = useState(false);
 	const [showSignUp, setShowSignUp] = useState(false);
 	const [status, setStatus] = useState("");
-	const mazo = useSelector((state) => state.cardview); // Actualizamos mazo directamente usando useSelector
-	const mazos = useSelector((state) => state.mazos); // Actualizamos mazo directamente usando useSelector
+	const mazo = useSelector((state: any) => state.cardview); // Actualizamos mazo directamente usando useSelector
+	const mazos = useSelector((state: any) => state.mazos); // Actualizamos mazo directamente usando useSelector
 
 	const [filters, setFilters] = useState([
 		{
@@ -36,10 +38,9 @@ function App() {
 
 	return (
 		<div className="App">
-			<Header setShowLogin={setShowLogin} setShowSignUp={setShowSignUp} />
+			<Header setShowLogin={setShowLogin} />
 			<Filtros filters={filters} setFilters={setFilters} />
 			<section className="View">
-				{/* <Cartas filters={filters} /> */}
 				<Deck status={status} setStatus={setStatus} filters={filters} />
 			</section>
 			<section>
@@ -48,7 +49,19 @@ function App() {
 			<section>
 				<MazoConstructor mazo={mazo} />
 			</section>
-			<ModalLogin show={showLogin} setShowLogin={setShowLogin} />
+			{
+				/* <Filtros filters={filters} setFilters={setFilters} />
+			<section className="View">
+				<Deck status={status} setStatus={setStatus} filters={filters} />
+			</section>
+			<section>
+				<Mazos mazos={mazos} />
+			</section>
+			<section>
+				<MazoConstructor mazo={mazo} />
+			</section>*/
+				<ModalLogin show={showLogin} setShowLogin={setShowLogin} />
+			}
 		</div>
 	);
 }

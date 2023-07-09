@@ -1,4 +1,9 @@
-export function handleNext(current, setCurrent, setPage, page) {
+export function handleNext(
+	current: number,
+	setCurrent: React.Dispatch<React.SetStateAction<number>>,
+	setPage: React.Dispatch<React.SetStateAction<number>>,
+	page: number
+): void {
 	if (current < 9) {
 		setCurrent(current + 1);
 	} else {
@@ -6,7 +11,13 @@ export function handleNext(current, setCurrent, setPage, page) {
 		setPage(page + 1);
 	}
 }
-export function handleLast(current, setCurrent, setPage, page) {
+
+export function handleLast(
+	current: number,
+	setCurrent: React.Dispatch<React.SetStateAction<number>>,
+	setPage: React.Dispatch<React.SetStateAction<number>>,
+	page: number
+): void {
 	if (current > 0) {
 		setCurrent(current - 1);
 	} else {
@@ -15,9 +26,15 @@ export function handleLast(current, setCurrent, setPage, page) {
 	}
 }
 
-export const obtenerLetras = (filters) => {
+export const obtenerLetras = (filters: {
+	ColorRed: boolean;
+	ColorBlack: boolean;
+	ColorGreen: boolean;
+	ColorWhite: boolean;
+	ColorBlue: boolean;
+}): string => {
 	const { ColorRed, ColorBlack, ColorGreen, ColorWhite, ColorBlue } = filters;
-	const letras = [];
+	const letras: string[] = [];
 
 	if (ColorRed) {
 		letras.push("R");
@@ -38,9 +55,14 @@ export const obtenerLetras = (filters) => {
 	return letras.join(",");
 };
 
-export const obtenerRarity = (filters) => {
+export const obtenerRarity = (filters: {
+	Common: boolean;
+	Uncommon: boolean;
+	Rare: boolean;
+	Mythic: boolean;
+}): string => {
 	const { Common, Uncommon, Rare, Mythic } = filters;
-	const rarity = [];
+	const rarity: string[] = [];
 
 	if (Common) {
 		rarity.push("Common");

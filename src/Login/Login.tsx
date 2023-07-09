@@ -1,8 +1,14 @@
-import { useState } from "react";
+import React, { Fragment, useState } from "react";
+
 import { useDispatch } from "react-redux";
 import { userLogin } from "../store";
 import "./Login.css";
-function Login(props) {
+
+interface NavbarLoginSignupProps {
+	setShowLogin: (show: boolean) => void;
+}
+
+function Login(props: NavbarLoginSignupProps): JSX.Element {
 	const { setShowLogin } = props;
 	const [showAlert, setShowAlert] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
@@ -15,7 +21,7 @@ function Login(props) {
 	const handleCloseModal = () => {
 		setShowLogin(false);
 	};
-	const handleLogin = async (e) => {
+	const handleLogin = async (e: any) => {
 		// Call sethShow from parent(setShowLogin) function and set to false for close the modal
 
 		e.preventDefault();
@@ -53,7 +59,7 @@ function Login(props) {
 	};
 
 	return (
-		<>
+		<Fragment>
 			{showAlert && <p>{errorMessage}</p>}
 			<form className="LoginForm" onSubmit={handleLogin}>
 				Email address {process.env.TECHNOLOGY}{" "}
@@ -78,7 +84,7 @@ function Login(props) {
 				<div onClick={handleLogin}>Entrar</div>
 				<div onClick={handleCloseModal}>Cerrar</div>
 			</form>
-		</>
+		</Fragment>
 	);
 }
 export default Login;

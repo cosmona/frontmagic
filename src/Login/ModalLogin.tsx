@@ -1,7 +1,13 @@
+import React from "react";
 import MagicModal from "../Components/MagicModal";
 import Login from "./Login";
 
-function ModalLogin(props) {
+interface NavbarLoginSignupProps {
+	setShowLogin: (show: boolean) => void;
+	show: boolean;
+}
+
+function ModalLogin(props: NavbarLoginSignupProps): React.JSX.Element {
 	const { show, setShowLogin } = props;
 
 	return (

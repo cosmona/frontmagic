@@ -12,14 +12,29 @@ import {
 
 import "./MazoConstructor.css";
 
-function MazoConstructor({ mazo, setMazo }) {
+interface Card {
+	name: string;
+	imageUrl: string;
+	id: string;
+}
+
+interface Mazo {
+	IDMazo: number;
+	Cards: Card[];
+}
+
+interface MazoConstructorProps {
+	mazo: Mazo;
+}
+
+function MazoConstructor({ mazo }: MazoConstructorProps) {
 	const [isLista, setLista] = useState(true);
 	const [status, setStatus] = useState("");
 
 	const dispatch = useDispatch();
 
 	//! Borra una carta del cardView
-	const handleRemoveMazo = (index) => {
+	const handleRemoveMazo = (index: number) => {
 		dispatch(cardRemove(index));
 	};
 
@@ -34,13 +49,13 @@ function MazoConstructor({ mazo, setMazo }) {
 	};
 
 	//! Salva un mazo nuevo
-	const handleListaSave = async (e) => {
+	const handleListaSave = async (e: React.FormEvent) => {
 		e.preventDefault();
 		setStatus("Saving");
 
 		//*Agarra el token del local storage
 		const newData = JSON.parse(
-			localStorage.getItem("redux_localstorage_simple_user")
+			localStorage.getItem("redux_localstorage_simple_user") || ""
 		);
 
 		let token;
@@ -81,12 +96,12 @@ function MazoConstructor({ mazo, setMazo }) {
 							dispatch(
 								idMazoAdd({
 									Cards: mazo.Cards,
-									idMazo: data.questionID,
+									IDMazo: data.questionID,
 								})
 							);
 							//* Añade el mazo a la store.mazos
 							const nuevoObjeto = {
-								ID: data.questionID,
+								id: data.questionID,
 								NameMazo: "kjahjk",
 								User: 1,
 							};
@@ -101,7 +116,7 @@ function MazoConstructor({ mazo, setMazo }) {
 	};
 
 	//! Borra el mazo
-	const handleMazoDelete = async (IDmazo) => {
+	const handleMazoDelete = async (IDmazo: number) => {
 		//* Borra toda la store.cardview
 		dispatch(cardRemoveAll());
 		//* Borra el mazo la store.mazos
@@ -110,7 +125,7 @@ function MazoConstructor({ mazo, setMazo }) {
 		setStatus("Saving");
 		//*Agarra el token del local storage
 		const newData = JSON.parse(
-			localStorage.getItem("redux_localstorage_simple_user")
+			localStorage.getItem("redux_localstorage_simple_user") || ""
 		);
 		let token;
 		if (newData) {
@@ -151,7 +166,6 @@ function MazoConstructor({ mazo, setMazo }) {
 		<div className="content-MazoConstructor">
 			<header>
 				<h2>
-					{console.log("mazo", mazo)}
 					Cartas del Mazo -{mazo.IDMazo} - {mazo.Cards.length}
 				</h2>
 			</header>
@@ -177,7 +191,10 @@ function MazoConstructor({ mazo, setMazo }) {
 						{isLista ? (
 							mazoItem.name
 						) : (
-							<img src={mazoItem.imageUrl} alt={index} />
+							<img
+								src={mazoItem.imageUrl}
+								alt={index.toString()}
+							/>
 						)}
 
 						<button onClick={() => handleRemoveMazo(index)}>

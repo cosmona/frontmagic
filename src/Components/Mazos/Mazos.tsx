@@ -1,21 +1,48 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-
-import "./Mazos.css";
+import { useDispatch } from "react-redux";
 import {
 	cardAdd,
 	mazoRemoveAll,
 	cardRemoveAll,
 	mazoListAdd,
 } from "../../store";
+import "./Mazos.css";
 
-function Mazos({ mazos }) {
-	const [cardView, setCardView] = useState({});
+type Card = {
+	name: string;
+	imageUrl: string;
+};
 
-	const newData = JSON.parse(
-		localStorage.getItem("redux_localstorage_simple_user")
-	);
-	let token;
+interface CardViewState {
+	Cards: Card[];
+	IDMazo: number | null;
+}
+
+type Mazos = {
+	ID: number;
+	NameMazo: string;
+	User: number;
+};
+
+interface MazosProps {
+	mazos: Mazos[];
+	cardView?: CardViewState[];
+}
+
+function Mazos({ mazos }: MazosProps) {
+	const [cardView, setCardView] = useState<CardViewState | null>(null);
+
+	let newData;
+
+	try {
+		newData = JSON.parse(
+			localStorage.getItem("redux_localstorage_simple_user") || ""
+		);
+	} catch (error) {
+		console.error("Error al analizar el JSON:", error);
+	}
+
+	let token: any;
 	if (newData) {
 		token = newData.data.token;
 	}
@@ -46,14 +73,13 @@ function Mazos({ mazos }) {
 
 			const data = await res.json();
 			dispatch(mazoRemoveAll());
-			console.log("data.mazos", data.mazos);
 			dispatch(mazoListAdd(data.mazos));
 		} catch (err) {
 			console.log("Error:", err);
 		}
 	};
 
-	const fetchSavedMazos = async (IdMazo) => {
+	const fetchSavedMazos = async (IdMazo: number) => {
 		try {
 			const res = await fetch(
 				"http://localhost:" +
@@ -76,17 +102,15 @@ function Mazos({ mazos }) {
 			}
 
 			const data = await res.json();
-			console.log("data", data);
 			const dataConIdMazo = { IDMazo: IdMazo, Cards: data.mazos };
 			setCardView(dataConIdMazo); // Actualiza el estado con los mazos recibidos
-			console.log("dataConIdMazo", dataConIdMazo);
 			dispatch(cardAdd(dataConIdMazo));
 		} catch (err) {
 			console.log("Error:", err);
 		}
 	};
 
-	const handleLoadingMazo = (IdMazo) => {
+	const handleLoadingMazo = (IdMazo: number) => {
 		//Borra Store
 		dispatch(cardRemoveAll());
 		// Carga mazo
@@ -97,20 +121,18 @@ function Mazos({ mazos }) {
 	return (
 		<div>
 			<h1>Mazos</h1>
-			{
-				<ul className="ListaMazos">
-					{mazos &&
-						mazos.map((mazo) => (
-							<li
-								className="Card"
-								key={mazo.ID}
-								onClick={() => handleLoadingMazo(mazo.ID)}
-							>
-								{mazo.ID}
-							</li>
-						))}
-				</ul>
-			}
+			<ul className="ListaMazos">
+				{mazos &&
+					mazos.map((mazo) => (
+						<li
+							className="Card"
+							key={mazo.ID}
+							onClick={() => handleLoadingMazo(mazo.ID)}
+						>
+							{mazo.ID}
+						</li>
+					))}
+			</ul>
 		</div>
 	);
 }

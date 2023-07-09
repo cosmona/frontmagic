@@ -7,16 +7,40 @@ import { handleNext, handleLast } from "../../Helpers/Helpers";
 import { obtenerLetras } from "../../Helpers/Helpers";
 import Swipe from "../Swipe/Swipe";
 
-function Cartas({ filters }) {
+interface Card {
+	name: string;
+	imageUrl: string;
+	id?: string; // Hacer que la propiedad 'id' sea opcional
+	foreignNames?: ForeignName[];
+}
+
+interface ForeignName {
+	language: string;
+	imageUrl: string;
+}
+
+interface Filters {
+	ColorRed: boolean;
+	ColorBlack: boolean;
+	ColorGreen: boolean;
+	ColorWhite: boolean;
+	ColorBlue: boolean;
+}
+
+interface CartasProps {
+	filters: Filters[];
+}
+
+function Cartas({ filters }: CartasProps): JSX.Element {
 	const { ColorRed, ColorBlack, ColorGreen, ColorWhite, ColorBlue } =
 		filters[0];
 
-	const [cards, setCards] = useState([]);
-	const [page, setPage] = useState(1);
-	const [loading, setLoading] = useState(true);
-	const [current, setCurrent] = useState(0);
+	const [cards, setCards] = useState<Card[]>([]);
+	const [page, setPage] = useState<number>(1);
+	const [loading, setLoading] = useState<boolean>(true);
+	const [current, setCurrent] = useState<number>(0);
 
-	const fetchCards = async () => {
+	const fetchCards = async (): Promise<void> => {
 		setLoading(true);
 		try {
 			const letrasComb = obtenerLetras(filters[0]);
@@ -37,14 +61,13 @@ function Cartas({ filters }) {
 			console.error(error);
 		}
 	};
-	const myElementRef = useRef(null);
 
 	useEffect(() => {
 		fetchCards();
 	}, [page, ColorRed, ColorBlack, ColorGreen, ColorBlue, ColorWhite]);
 
-	const buscarObjeto = () => {
-		const objeto = cards[current].foreignNames.find((objeto) => {
+	const buscarObjeto = (): ForeignName | undefined => {
+		const objeto = cards[current].foreignNames?.find((objeto) => {
 			if (objeto.language === "Spanish") {
 				return objeto;
 			}
@@ -53,7 +76,7 @@ function Cartas({ filters }) {
 		return objeto;
 	};
 
-	const foundSpanishCard = () => {
+	const foundSpanishCard = (): JSX.Element => {
 		const objetoEncontrado = buscarObjeto();
 		if (objetoEncontrado) {
 			return (
@@ -84,7 +107,6 @@ function Cartas({ filters }) {
 				<Fragment>
 					{`${current}/${page}`}
 					<div className="Content-Direction">
-						{/* Si esta en la pagina 1 y en la carta priera oculta el boton*/}
 						{current === 0 && page === 1 ? null : (
 							<Fragment>
 								<div
