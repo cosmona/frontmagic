@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { ReactSVG } from "react-svg";
 import {
 	cardRemoveAll,
 	idMazoAdd,
@@ -9,8 +10,46 @@ import {
 	mazoListAdd,
 	mazoAddOne,
 } from "../../store";
+import cardsIcon from "../../Media/cards.png";
+import saveIcon from "../../Media/saveIcon.png";
+import newIcon from "../../Media/newIcon.png";
+import deleteIcon from "../../Media/deleteIcon.png";
+import listIcon from "../../Media/listIcon.png";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+	faArrowDownShortWide,
+	faArrowsUpDown,
+	faBookmark,
+	faDownLong,
+	faFile,
+	faListSquares,
+	faSquare,
+	faTrash,
+	faTurnDown,
+} from "@fortawesome/free-solid-svg-icons";
+
+import { faBuromobelexperte } from "@fortawesome/free-brands-svg-icons";
+import { makeStyles } from "@material-ui/core/styles";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from "@material-ui/icons/Delete";
+import Typography from "@material-ui/core/Typography";
 
 import "./MazoConstructor.css";
+library.add(faBuromobelexperte, faBookmark, faFile);
+const useStyles = makeStyles((theme) => ({
+	list: {
+	  backgroundColor: theme.palette.background.paper,
+	  borderRadius: theme.shape.borderRadius,
+	  boxShadow: theme.shadows[2],
+	  marginTop: theme.spacing(2),
+	},
+  }));
+  
 
 interface Card {
 	name: string;
@@ -164,44 +203,101 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 	// Renderiza la lista de mazos
 	return (
 		<div className="content-MazoConstructor">
-			<header>
-				<h2>
-					Cartas del Mazo -{mazo.IDMazo} - {mazo.Cards.length}
-				</h2>
-			</header>
-			<div className="menu-MazoConsructor">
-				<div className="Buttons">
-					{isLista ? (
-						<div onClick={handleListaView}>Cartas</div>
-					) : (
-						<div onClick={handleListaView}>lista</div>
-					)}
+			<div className="WrapperMazoConstructor">
+				<div>
+					{mazo.IDMazo ? mazo.IDMazo : "(Not Saved)"} -
+					{mazo.Cards && mazo.Cards.length}
+				</div>
+				<div className="menu-MazoConsructor">
+					<div className="Buttons">
+						{isLista ? (
+							<div
+								className="cardsIcon"
+								onClick={handleListaView}
+							>
+								<FontAwesomeIcon
+									size="xl"
+									icon={faBuromobelexperte}
+								/>
+							</div>
+						) : (
+							<div onClick={handleListaView}>
+								<FontAwesomeIcon
+									className="listicon"
+									size="xl"
+									icon={faListSquares}
+								/>
+							</div>
+						)}
 
-					<div onClick={handleListaSave}>Salvar</div>
+						<div onClick={handleListaSave}>
+							<FontAwesomeIcon
+								className="saveIcon"
+								icon={faBookmark}
+								size="xl"
+								style={{ color: "#ffffff" }}
+							/>
+						</div>
 
-					<div onClick={handleListaDelete}>Nuevo</div>
-					<div onClick={() => handleMazoDelete(mazo.IDMazo)}>
-						Borrar
+						<div onClick={handleListaDelete}>
+							<FontAwesomeIcon
+								className="newIcon"
+								size="xl"
+								icon={faFile}
+							/>
+						</div>
+						<div onClick={() => handleMazoDelete(mazo.IDMazo)}>
+							<FontAwesomeIcon
+								className="deleteIcon"
+								size="xl"
+								icon={faTrash}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
-			<ul className="list-MazoConstructor">
-				{mazo.Cards.map((mazoItem, index) => (
-					<li key={index}>
-						{isLista ? (
-							mazoItem.name
-						) : (
-							<img
-								src={mazoItem.imageUrl}
-								alt={index.toString()}
-							/>
-						)}
 
-						<button onClick={() => handleRemoveMazo(index)}>
-							Eliminar
-						</button>
-					</li>
-				))}
+			<ul className="list-MazoConstructor">
+				{mazo.Cards &&
+					mazo.Cards.map((mazoItem, index) => (
+						<li key={index}>
+							 {isLista ? (
+        <List className={classes.list}>
+          {mazo.Cards &&
+            mazo.Cards.map((mazoItem, index) => (
+              <ListItem key={index}>
+                <ListItemText primary={mazoItem.name} />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={() => handleRemoveMazo(index)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+        </List>
+      ) : (
+        <ul className="list-MazoConstructor">
+          {mazo.Cards &&
+            mazo.Cards.map((mazoItem, index) => (
+              <li key={index}>
+                <img src={mazoItem.imageUrl} alt={index.toString()} />
+                <button onClick={() => handleRemoveMazo(index)}>
+                  <img
+                    className="deleteIcon"
+                    src={deleteIcon}
+                    alt="deleteIcon"
+                  />
+                </button>
+              </li>
+            ))}
+        </ul>
+      )}
+    </div>
+  );}
 			</ul>
 		</div>
 	);

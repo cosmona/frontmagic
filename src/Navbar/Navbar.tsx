@@ -2,11 +2,11 @@ import React, { Fragment } from "react";
 import NavbarLoginSignup from "../Login/NavbarLoginSignup";
 import { useSelector } from "react-redux";
 
-interface NavbarLoginSignupProps {
+interface LoginSignupProps {
 	setShowLogin: (show: boolean) => void;
 }
 
-function MagicNavbar(props: NavbarLoginSignupProps): JSX.Element {
+function MagicNavbar(props: LoginSignupProps): React.JSX.Element {
 	const { setShowLogin } = props;
 	const user = useSelector((state: any) => state.user);
 

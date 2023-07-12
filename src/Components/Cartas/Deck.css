@@ -10,13 +10,12 @@
 }
 .deck {
 	position: absolute;
-	width: 300px;
-	height: 200px;
+	width: 90%;
 	will-change: transform;
-	display: flex;
-	align-items: center;
-	justify-content: center;
 	touch-action: none;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin-left: -45%;
 }
 
 .deck > div {
@@ -24,9 +23,9 @@
 	/* background-size: auto 85%; */
 	background-repeat: no-repeat;
 	background-position: center center;
-	width: 38vh;
+	width: 44vh;
 	/* max-width: 150px; */
-	height: 55vh;
+	height: 61vh;
 	/* max-height: 285px; */
 	will-change: transform;
 	border-radius: 10px;
@@ -43,7 +42,6 @@
 	border-radius: 8px;
 	background-color: #fff;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-	overflow: hidden;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -55,4 +53,12 @@
 	height: 100%;
 	background-size: cover;
 	background-position: center;
+}
+
+.hide {
+	display: none;
+}
+
+.show {
+	display: block;
 }

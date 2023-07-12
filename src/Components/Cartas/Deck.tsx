@@ -1,43 +1,50 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { useSprings, animated, interpolate } from "@react-spring/web";
+import { useInView, useSprings, animated } from "@react-spring/web";
 import { useDrag } from "react-use-gesture";
 import axios from "axios";
 import noneCard from "../../Media/nonecard.png";
-import { obtenerLetras, obtenerRarity } from "../../Helpers/Helpers";
-import Swipe from "../Swipe/Swipe";
+import { obtenerLetras, obtenerRarity, to, from } from "../../Helpers/Helpers";
 import { useDispatch } from "react-redux";
 import { cardAddOne } from "../../store";
-
-import "./Deck.css";
 import Loading from "../Loading/Loading";
+import "./Deck.css";
+
 interface CardData {
 	name: string;
 	imageUrl: string;
 	id: string;
 	manaCost: string;
 }
-const to = (i: number) => ({
-	x: 0,
-	y: i * -4,
-	scale: 1,
-	rot: -10 + Math.random() * 20,
-	delay: i * 100,
-});
 
-const from = (_i: number) => ({ x: 0, rot: 0, scale: 1.5, y: -1000 });
-
-const trans = (r: number, s: number) =>
-	`perspective(1500px) rotateX(30deg) rotateY(${
-		r / 10
-	}deg) rotateZ(${r}deg) scale(${s})`;
-
-interface DeckProps {
-	status: string;
-	setStatus: React.Dispatch<React.SetStateAction<string>>;
-	filters: any[];
+interface FilterState {
+	ColorRed: boolean;
+	ColorBlack: boolean;
+	ColorGreen: boolean;
+	ColorWhite: boolean;
+	ColorBlue: boolean;
+	Common: boolean;
+	Uncommon: boolean;
+	Rare: boolean;
+	Mythic: boolean;
 }
 
-function Deck({ status, setStatus, filters }: DeckProps) {
+interface Deckprops {
+	status: string;
+	setStatus: React.Dispatch<React.SetStateAction<string>>;
+	filters: FilterState;
+}
+
+interface paramsInterface {
+	colorIdentity: string;
+	page: number;
+	pageSize: number;
+	rarity: string;
+}
+
+function Deck(props: Deckprops) {
+	const { status, setStatus, filters } = props;
+	const [ref, inView] = useInView();
+
 	const {
 		ColorRed,
 		ColorBlack,
@@ -48,16 +55,19 @@ function Deck({ status, setStatus, filters }: DeckProps) {
 		Uncommon,
 		Rare,
 		Mythic,
-	} = filters[0];
+	}: FilterState = filters;
 
 	const dispatch = useDispatch();
-	const [cards, setCards] = useState<any[]>([]);
-	const [page, setPage] = useState(1);
-	const [loading, setLoading] = useState(true);
-	const [current, setCurrent] = useState(0);
+	const [cards, setCards] = useState<CardData[]>([]);
+	const [page, setPage] = useState<number>(1);
+	const [refresh, setRefresh] = useState<boolean>(false);
+	const [hiddenCardIndex, setHiddenCardIndex] = useState<Set<number>>(
+		new Set()
+	);
+
 	const gone = useState<Set<number>>(new Set())[0];
 
-	const [props, api] = useSprings(cards.length, (i) => ({
+	const [propis, api] = useSprings(cards.length, (i) => ({
 		...to(i),
 		from: from(i),
 	}));
@@ -66,18 +76,22 @@ function Deck({ status, setStatus, filters }: DeckProps) {
 		try {
 			setStatus("Loading");
 
-			const letrasComb = obtenerLetras(filters[0]);
-
-			const rarityFilter = obtenerRarity(filters[0]);
-
+			const letrasComb = obtenerLetras(filters);
+			const rarityFilter = obtenerRarity(filters);
 			let url = "https://api.magicthegathering.io/v1/cards?";
 
-			const params: any = {};
+			const params: paramsInterface = {
+				colorIdentity: "",
+				page: page,
+				pageSize: 0,
+				rarity: "",
+			};
 
+			//*Obtenemos las letras
 			if (letrasComb) {
 				params.colorIdentity = letrasComb;
 			}
-
+			//*Obtenemos el tipo de rareza
 			if (rarityFilter) {
 				params.rarity = rarityFilter;
 			}
@@ -94,7 +108,12 @@ function Deck({ status, setStatus, filters }: DeckProps) {
 	};
 
 	useEffect(() => {
-		fetchCards();
+		setPage(1);
+		setTimeout(() => {
+			gone.clear();
+			api.start((i) => to(i));
+		}, 600);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		ColorRed,
 		ColorBlack,
@@ -105,13 +124,26 @@ function Deck({ status, setStatus, filters }: DeckProps) {
 		Uncommon,
 		Rare,
 		Mythic,
+		filters,
 	]);
-
 	useEffect(() => {
 		fetchCards();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [page]);
+	useEffect(() => {
+		setPage(1);
+		gone.clear();
+		api.start((i) => to(i));
+		fetchCards();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [filters]);
+	useEffect(() => {
+		console.log("cards", cards);
+		console.log("hiddenCardIndex", hiddenCardIndex);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [cards, refresh]);
 
-	const buscarObjeto = () => {
+	/* const buscarObjeto = () => {
 		const objeto = cards[current].foreignNames.find((objeto: any) => {
 			if (objeto.language === "Spanish") {
 				return objeto;
@@ -119,10 +151,9 @@ function Deck({ status, setStatus, filters }: DeckProps) {
 			return false;
 		});
 		return objeto;
-	};
+	}; */
 
 	const handleAddStore = ({ name, imageUrl, id, manaCost }: CardData) => {
-		console.log("handleAddStore", name);
 		dispatch(cardAddOne({ name, imageUrl, id }));
 	};
 
@@ -151,8 +182,15 @@ function Deck({ status, setStatus, filters }: DeckProps) {
 				const rot = mx / 100 + (isGone ? dir * 10 * velocity : 0);
 				const scale = down ? 1.1 : 1;
 
-				if (x >= 664 && isGone) handleAddStore(cards[index]);
-
+				//* Si pasa a la derecha lo añade a la store
+				if (x >= 664 && isGone) {
+					handleAddStore(cards[index]);
+					/* 	setTimeout(() => {
+						setHiddenCardIndex((prevSet) =>
+						new Set(prevSet).add(index)
+					);
+					}, 500); // Retraso de 500ms antes de ocultar la carta */
+				}
 				return {
 					x,
 					rot,
@@ -166,15 +204,13 @@ function Deck({ status, setStatus, filters }: DeckProps) {
 			});
 
 			if (!down && gone.size === cards.length) {
-				setTimeout(() => {
-					gone.clear();
-					fetchCards();
-					api.start((i) => to(i));
-				}, 600);
-
 				if (index === 0) {
 					setPage((prevPage) => prevPage + 1);
 				}
+				setTimeout(() => {
+					gone.clear();
+					api.start((i) => to(i));
+				}, 600);
 			}
 		}
 	);
@@ -183,26 +219,31 @@ function Deck({ status, setStatus, filters }: DeckProps) {
 		<Loading />
 	) : (
 		<>
-			{console.log("cards", cards)}
 			{cards.length > 0 && (
 				<Fragment>
 					<div className="deck">
-						{props.map(({ x, y, rot, scale }, i) => (
+						{propis.map(({ x, y, rot, scale }, index: number) => (
 							<animated.div
-								className="card"
-								key={i}
+								className={`card ${
+									hiddenCardIndex.has(index)
+										? "card hide"
+										: "card"
+								}`}
+								key={index}
 								style={{
 									x,
 									y,
-									transform: interpolate([rot, scale], trans),
 								}}
-								{...bind(i)}
+								{...bind(index)}
 							>
 								<div
+									className={`card ${
+										hiddenCardIndex.has(index) ? "hide" : ""
+									}`}
 									style={{
 										backgroundImage: `url(${
-											cards[i].imageUrl
-												? cards[i].imageUrl
+											cards[index].imageUrl
+												? cards[index].imageUrl
 												: noneCard
 										})`,
 									}}

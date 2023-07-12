@@ -6,11 +6,21 @@ import {
 	cardRemoveAll,
 	mazoListAdd,
 } from "../../store";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { library } from "@fortawesome/fontawesome-svg-core";
+import {
+	faArrowAltCircleDown,
+	faArrowAltCircleUp,
+} from "@fortawesome/free-solid-svg-icons";
 import "./Mazos.css";
+
+// Registra el icono en el contexto de FontAwesome
 
 type Card = {
 	name: string;
 	imageUrl: string;
+	id: string;
+	manaCost: string;
 };
 
 interface CardViewState {
@@ -31,6 +41,7 @@ interface MazosProps {
 
 function Mazos({ mazos }: MazosProps) {
 	const [cardView, setCardView] = useState<CardViewState | null>(null);
+	const [menu, setMenu] = useState<boolean>(false);
 
 	let newData;
 
@@ -120,19 +131,37 @@ function Mazos({ mazos }: MazosProps) {
 
 	return (
 		<div>
-			<h1>Mazos</h1>
-			<ul className="ListaMazos">
-				{mazos &&
-					mazos.map((mazo) => (
-						<li
-							className="Card"
-							key={mazo.ID}
-							onClick={() => handleLoadingMazo(mazo.ID)}
-						>
-							{mazo.ID}
-						</li>
-					))}
-			</ul>
+			<div className="WrapperMazos">
+				<div
+					className="TitleMazos"
+					onClick={() => setMenu((prevMenu) => !prevMenu)}
+				>
+					Mazos{" "}
+					<div className="filterIcon">
+						{menu ? (
+							<FontAwesomeIcon icon={faArrowAltCircleUp} />
+						) : (
+							<FontAwesomeIcon icon={faArrowAltCircleDown} />
+						)}
+					</div>
+				</div>
+				<ul
+					className={
+						menu ? "desplegableMazos" : "desplegableMazos hide"
+					}
+				>
+					{mazos &&
+						mazos.map((mazo) => (
+							<li
+								className="Card"
+								key={mazo.ID}
+								onClick={() => handleLoadingMazo(mazo.ID)}
+							>
+								{mazo.ID}
+							</li>
+						))}
+				</ul>
+			</div>
 		</div>
 	);
 }

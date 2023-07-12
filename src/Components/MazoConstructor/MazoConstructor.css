@@ -1,7 +1,6 @@
 .menu-MazoConsructor {
 	display: flex;
 	flex-direction: row;
-	background-color: rgba(16, 16, 100, 0.81);
 	color: white;
 }
 .list-MazoConstructor {
@@ -15,4 +14,38 @@
 	/* margin: 0 auto; */
 	width: 100%;
 	justify-content: space-between;
+}
+.WrapperMazoConstructor {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	background-color: #47ace2;
+	color: antiquewhite;
+	align-items: center;
+}
+.cardsIcon,
+.saveIcon {
+	width: 30px;
+	padding: 5px;
+}
+
+.saveIcon {
+	width: 29px;
+	padding: 5px;
+}
+
+.newIcon {
+	width: 30px;
+	padding: 5px;
+}
+.deleteIcon {
+	width: 30px;
+	padding: 5px;
+}
+.listIcon {
+	width: 30px;
+	padding: 5px;
+}
+.filterIcon {
+	padding: 5px;
 }

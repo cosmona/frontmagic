@@ -1,13 +1,12 @@
 import React from "react";
-
 import MagicNavbar from "../Navbar/Navbar";
 import "./Header.css";
 
-interface NavbarLoginSignupProps {
+interface LoginSignupProps {
 	setShowLogin: (show: boolean) => void;
 }
 
-function Header(props: NavbarLoginSignupProps): React.JSX.Element {
+function Header(props: LoginSignupProps): React.JSX.Element {
 	const { setShowLogin } = props;
 
 	return (

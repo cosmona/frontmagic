@@ -19,7 +19,7 @@ interface Card {
 
 interface CardViewState {
 	Cards: Card[];
-	ID: number | null;
+	IDMazo: number | null;
 }
 
 const userSlice = createSlice({
@@ -66,7 +66,7 @@ interface CardViewState {
 
 const cardViewSlize = createSlice({
 	name: "cardview",
-	initialState: [] as unknown as CardViewState,
+	initialState: { Cards: [], IDMazo: null } as CardViewState,
 	reducers: {
 		cardAddOne: (state, action: PayloadAction<Card>) => {
 			const nuevaCarta = action.payload;
