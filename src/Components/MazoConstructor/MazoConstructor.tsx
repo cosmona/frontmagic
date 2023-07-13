@@ -30,31 +30,28 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faBuromobelexperte } from "@fortawesome/free-brands-svg-icons";
-import { makeStyles } from "@material-ui/core/styles";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
-import Typography from "@material-ui/core/Typography";
-
+import {
+	Button,
+	List,
+	Image,
+	Table,
+	Header,
+	Container,
+} from "semantic-ui-react";
+import "semantic-ui-css/semantic.min.css";
 import "./MazoConstructor.css";
 library.add(faBuromobelexperte, faBookmark, faFile);
-const useStyles = makeStyles((theme) => ({
-	list: {
-	  backgroundColor: theme.palette.background.paper,
-	  borderRadius: theme.shape.borderRadius,
-	  boxShadow: theme.shadows[2],
-	  marginTop: theme.spacing(2),
-	},
-  }));
-  
 
 interface Card {
 	name: string;
 	imageUrl: string;
 	id: string;
+	manaCost: string;
+	originalType: string;
+	rarity: string;
+	types: [];
+	subtypes: [];
+	originalText: string;
 }
 
 interface Mazo {
@@ -256,49 +253,90 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 					</div>
 				</div>
 			</div>
-
-			<ul className="list-MazoConstructor">
-				{mazo.Cards &&
-					mazo.Cards.map((mazoItem, index) => (
-						<li key={index}>
-							 {isLista ? (
-        <List className={classes.list}>
-          {mazo.Cards &&
-            mazo.Cards.map((mazoItem, index) => (
-              <ListItem key={index}>
-                <ListItemText primary={mazoItem.name} />
-                <ListItemSecondaryAction>
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => handleRemoveMazo(index)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            ))}
-        </List>
-      ) : (
-        <ul className="list-MazoConstructor">
-          {mazo.Cards &&
-            mazo.Cards.map((mazoItem, index) => (
-              <li key={index}>
-                <img src={mazoItem.imageUrl} alt={index.toString()} />
-                <button onClick={() => handleRemoveMazo(index)}>
-                  <img
-                    className="deleteIcon"
-                    src={deleteIcon}
-                    alt="deleteIcon"
-                  />
-                </button>
-              </li>
-            ))}
-        </ul>
-      )}
-    </div>
-  );}
-			</ul>
+			<Table compact celled>
+				<Table.Header>
+					<Table.HeaderCell>Mazo {mazo.IDMazo}</Table.HeaderCell>
+				</Table.Header>
+				<Table.Body>
+					{mazo.Cards &&
+						mazo.Cards.map((mazoItem, index) => (
+							<Table.Row>
+								{isLista ? (
+									<>
+										<Table.Cell>
+											<Header.Content>
+												<Header as="h4" image>
+													<Header>
+														<Image
+															className="imagePreview"
+															imagePreview
+															src={
+																mazoItem.imageUrl
+															}
+														/>
+														<div>
+															<div>
+																{mazoItem.name}
+															</div>
+															<div>
+																{
+																	mazoItem.originalType
+																}
+															</div>
+														</div>
+													</Header>
+													<Header.Subheader>
+														{mazoItem.originalText}
+													</Header.Subheader>
+												</Header>
+											</Header.Content>
+										</Table.Cell>
+										<div className="wrapperData">
+											<Table.Cell>
+												<Table.HeaderCell>
+													Mana
+												</Table.HeaderCell>
+												{mazoItem.manaCost}
+											</Table.Cell>
+											<Table.Cell>
+												<Table.HeaderCell>
+													Rarity
+												</Table.HeaderCell>
+												{mazoItem.rarity}
+											</Table.Cell>
+											<Table.Cell>
+												{" "}
+												<Table.HeaderCell>
+													Types
+												</Table.HeaderCell>
+												{mazoItem.types}
+											</Table.Cell>
+											<Table.Cell>
+												<Table.HeaderCell>
+													Subtypes
+												</Table.HeaderCell>
+												{mazoItem.subtypes}
+											</Table.Cell>
+										</div>
+										<Table.Cell collapsing>
+											<Button
+												onClick={() =>
+													handleRemoveMazo(index)
+												}
+												icon="trash"
+											/>
+										</Table.Cell>
+									</>
+								) : (
+									<Image
+										imagePreview
+										src={mazoItem.imageUrl}
+									/>
+								)}
+							</Table.Row>
+						))}
+				</Table.Body>
+			</Table>
 		</div>
 	);
 }

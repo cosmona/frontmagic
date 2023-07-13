@@ -46,7 +46,11 @@ const Filtros = (props: FiltrosProps) => {
 			<form>
 				<div className="IdentityColor">
 					<img
-						className={filters.ColorRed ? "icon border" : "icon"}
+						className={
+							filters.ColorRed
+								? "iconFiltros border"
+								: "iconFiltros"
+						}
 						src={ColorRed}
 						alt="Rojo"
 						onClick={() =>
@@ -57,7 +61,11 @@ const Filtros = (props: FiltrosProps) => {
 						}
 					/>
 					<img
-						className={filters.ColorBlack ? "icon border" : "icon"}
+						className={
+							filters.ColorBlack
+								? "iconFiltros border"
+								: "iconFiltros"
+						}
 						src={ColorBlack}
 						alt="Negro"
 						onClick={() =>
@@ -68,7 +76,11 @@ const Filtros = (props: FiltrosProps) => {
 						}
 					/>
 					<img
-						className={filters.ColorGreen ? "icon border" : "icon"}
+						className={
+							filters.ColorGreen
+								? "iconFiltros border"
+								: "iconFiltros"
+						}
 						src={ColorGreen}
 						alt="Verde"
 						onClick={() =>
@@ -79,7 +91,11 @@ const Filtros = (props: FiltrosProps) => {
 						}
 					/>
 					<img
-						className={filters.ColorWhite ? "icon border" : "icon"}
+						className={
+							filters.ColorWhite
+								? "iconFiltros border"
+								: "iconFiltros"
+						}
 						src={ColorWhite}
 						alt="Blanco"
 						onClick={() =>
@@ -90,7 +106,11 @@ const Filtros = (props: FiltrosProps) => {
 						}
 					/>
 					<img
-						className={filters.ColorBlue ? "icon border" : "icon"}
+						className={
+							filters.ColorBlue
+								? "iconFiltros border"
+								: "iconFiltros"
+						}
 						src={ColorBlue}
 						alt="Azul"
 						onClick={() =>

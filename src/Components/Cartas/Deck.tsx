@@ -14,6 +14,11 @@ interface CardData {
 	imageUrl: string;
 	id: string;
 	manaCost: string;
+	originalType: string;
+	rarity: string;
+	types: [];
+	subtypes: [];
+	originalText: string;
 }
 
 interface FilterState {
@@ -153,8 +158,30 @@ function Deck(props: Deckprops) {
 		return objeto;
 	}; */
 
-	const handleAddStore = ({ name, imageUrl, id, manaCost }: CardData) => {
-		dispatch(cardAddOne({ name, imageUrl, id }));
+	const handleAddStore = ({
+		name,
+		imageUrl,
+		id,
+		manaCost,
+		originalType,
+		rarity,
+		types,
+		subtypes,
+		originalText,
+	}: CardData) => {
+		dispatch(
+			cardAddOne({
+				name,
+				imageUrl,
+				id,
+				manaCost,
+				originalType,
+				rarity,
+				types,
+				subtypes,
+				originalText,
+			})
+		);
 	};
 
 	const bind = useDrag(
@@ -184,6 +211,7 @@ function Deck(props: Deckprops) {
 
 				//* Si pasa a la derecha lo añade a la store
 				if (x >= 664 && isGone) {
+					console.log("cards[index]", cards[index]);
 					handleAddStore(cards[index]);
 					/* 	setTimeout(() => {
 						setHiddenCardIndex((prevSet) =>
@@ -224,10 +252,8 @@ function Deck(props: Deckprops) {
 					<div className="deck">
 						{propis.map(({ x, y, rot, scale }, index: number) => (
 							<animated.div
-								className={`card ${
-									hiddenCardIndex.has(index)
-										? "card hide"
-										: "card"
+								className={`cardContainer ${
+									hiddenCardIndex.has(index) ? "hide" : ""
 								}`}
 								key={index}
 								style={{

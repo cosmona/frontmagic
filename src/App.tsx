@@ -53,15 +53,16 @@ function App() {
 	}, [mazo, filters]);
 	useEffect(() => {}, [mazos]);
 	const handleDownUp = () => {
+		console.log("scrollDirection", scrollDirection);
 		if (scrollDirection === "down") {
 			window.scrollBy({
-				top: window.innerHeight,
+				top: document.documentElement.scrollHeight,
 				behavior: "smooth",
 			});
 			setScrollDirection("up");
 		} else {
 			window.scrollBy({
-				top: -window.innerHeight,
+				top: -document.documentElement.scrollHeight,
 				behavior: "smooth",
 			});
 			setScrollDirection("down");
@@ -74,18 +75,18 @@ function App() {
 			<section className="Filtros">
 				<Filtros filters={filters} setFilters={setFilters} />
 			</section>
-			<section className="View">
-				<Deck status={status} setStatus={setStatus} filters={filters} />
-			</section>
 			<section>
 				<Mazos mazos={mazos} />
 			</section>
-			<section>
-				<MazoConstructor mazo={mazo} />
+			<section className="View">
+				<Deck status={status} setStatus={setStatus} filters={filters} />
 			</section>
 			<div className="downIcon" onClick={() => handleDownUp()}>
 				<FontAwesomeIcon icon={faArrowsUpDown} size="lg" />
 			</div>
+			<section>
+				<MazoConstructor mazo={mazo} />
+			</section>
 			{
 				/* <Filtros filters={filters} setFilters={setFilters} />
 			<section className="View">

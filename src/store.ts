@@ -14,6 +14,12 @@ interface Card {
 	name: string;
 	imageUrl: string;
 	id: string;
+	manaCost: string;
+	originalType: string;
+	rarity: string;
+	types: [];
+	subtypes: [];
+	originalText: string;
 	// Propiedades de la carta
 }
 

@@ -21,8 +21,8 @@
 }
 .downIcon {
 	background-color: rgb(30 191 102 / 62%);
-	width: 45px;
-	height: 45px;
+	width: 55px;
+	height: 55px;
 	border-radius: 50%;
 	color: aliceblue;
 	display: flex;
@@ -30,5 +30,6 @@
 	align-items: center;
 	position: fixed;
 	left: 3%;
-	top: 90%;
+	top: 70vh;
+	z-index: 1;
 }

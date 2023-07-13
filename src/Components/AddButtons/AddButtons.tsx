@@ -7,6 +7,10 @@ interface Card {
 	name: string;
 	imageUrl: string;
 	id: string;
+	manaCost: string;
+	originalType: string;
+	rarity: string;
+	originalText: string;
 }
 
 interface AddButtonsProps {
@@ -21,9 +25,26 @@ const handleAddStore = (
 	name: string,
 	imageUrl: string,
 	id: string,
+	manaCost: string,
+	originalType: string,
+	types: [],
+	subtypes: [],
+	originalText: string,
 	dispatch: any
 ): void => {
-	dispatch(cardAddOne({ name, imageUrl, id }));
+	dispatch(
+		cardAddOne({
+			name,
+			imageUrl,
+			id,
+			manaCost,
+			originalType,
+			rarity: "",
+			types: [],
+			subtypes: [],
+			originalText,
+		})
+	);
 };
 
 function AddButtons({
@@ -44,6 +65,11 @@ function AddButtons({
 							carta.name,
 							carta.imageUrl,
 							carta.id,
+							carta.manaCost,
+							carta.originalType,
+							carta.types,
+							carta.subtypes,
+							carta.originalText,
 							dispatch
 						);
 					}}

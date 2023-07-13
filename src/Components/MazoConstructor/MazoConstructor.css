@@ -18,10 +18,11 @@
 .WrapperMazoConstructor {
 	display: flex;
 	flex-direction: row;
-	justify-content: space-around;
+	justify-content: space-between;
 	background-color: #47ace2;
 	color: antiquewhite;
 	align-items: center;
+	padding: 0px 5px;
 }
 .cardsIcon,
 .saveIcon {
@@ -48,4 +49,10 @@
 }
 .filterIcon {
 	padding: 5px;
+}
+.imagePreview {
+	width: 70px !important;
+}
+.wrapperData {
+	width: 100vw;
 }
