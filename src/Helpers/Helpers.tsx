@@ -62,7 +62,7 @@ export const obtenerRarity = (filters: {
 	Mythic: boolean;
 }): string => {
 	const { Common, Uncommon, Rare, Mythic } = filters;
-	const rarity: string[] = [];
+	const rarity: string[] | null = [];
 
 	if (Common) {
 		rarity.push("Common");

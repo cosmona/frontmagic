@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { useInView, useSprings, animated } from "@react-spring/web";
+import { useSprings, animated } from "@react-spring/web";
 import { useDrag } from "react-use-gesture";
 import axios from "axios";
 import noneCard from "../../Media/nonecard.png";
@@ -7,31 +7,8 @@ import { obtenerLetras, obtenerRarity, to, from } from "../../Helpers/Helpers";
 import { useDispatch } from "react-redux";
 import { cardAddOne } from "../../store";
 import Loading from "../Loading/Loading";
+import { CardData, FilterState } from "../../Helpers/Interfaces";
 import "./Deck.css";
-
-interface CardData {
-	name: string;
-	imageUrl: string;
-	id: string;
-	manaCost: string;
-	originalType: string;
-	rarity: string;
-	types: [];
-	subtypes: [];
-	originalText: string;
-}
-
-interface FilterState {
-	ColorRed: boolean;
-	ColorBlack: boolean;
-	ColorGreen: boolean;
-	ColorWhite: boolean;
-	ColorBlue: boolean;
-	Common: boolean;
-	Uncommon: boolean;
-	Rare: boolean;
-	Mythic: boolean;
-}
 
 interface Deckprops {
 	status: string;
@@ -40,15 +17,18 @@ interface Deckprops {
 }
 
 interface paramsInterface {
-	colorIdentity: string;
+	colorIdentity: string | null;
 	page: number;
 	pageSize: number;
-	rarity: string;
+	rarity: string | null;
+	name: string | null;
+	text: string | null;
+	legalidades: string | null;
+	types: string | null;
 }
 
 function Deck(props: Deckprops) {
 	const { status, setStatus, filters } = props;
-	const [ref, inView] = useInView();
 
 	const {
 		ColorRed,
@@ -60,12 +40,16 @@ function Deck(props: Deckprops) {
 		Uncommon,
 		Rare,
 		Mythic,
+		Name,
+		Text,
+		Legalidades,
+		Types,
 	}: FilterState = filters;
 
 	const dispatch = useDispatch();
 	const [cards, setCards] = useState<CardData[]>([]);
 	const [page, setPage] = useState<number>(1);
-	const [refresh, setRefresh] = useState<boolean>(false);
+	const [refresh] = useState<boolean>(false);
 	const [hiddenCardIndex, setHiddenCardIndex] = useState<Set<number>>(
 		new Set()
 	);
@@ -82,29 +66,24 @@ function Deck(props: Deckprops) {
 			setStatus("Loading");
 
 			const letrasComb = obtenerLetras(filters);
-			const rarityFilter = obtenerRarity(filters);
+			const rarityFilter: string | null = obtenerRarity(filters);
 			let url = "https://api.magicthegathering.io/v1/cards?";
 
 			const params: paramsInterface = {
-				colorIdentity: "",
+				colorIdentity: letrasComb ? letrasComb : null,
 				page: page,
-				pageSize: 0,
-				rarity: "",
+				pageSize: 10,
+				rarity: rarityFilter ? rarityFilter : null,
+				name: Name ? Name : null,
+				text: Text ? Text : null,
+				types: Types ? Types : null,
+				legalidades: Legalidades ? Legalidades : null,
 			};
 
-			//*Obtenemos las letras
-			if (letrasComb) {
-				params.colorIdentity = letrasComb;
-			}
-			//*Obtenemos el tipo de rareza
-			if (rarityFilter) {
-				params.rarity = rarityFilter;
-			}
-
 			params.page = page;
-			params.pageSize = 10;
 
 			const response = await axios.get(url, { params });
+			console.log("response", response);
 			setCards(response.data.cards);
 			setStatus("Cargado");
 		} catch (error) {
@@ -131,10 +110,12 @@ function Deck(props: Deckprops) {
 		Mythic,
 		filters,
 	]);
+
 	useEffect(() => {
 		fetchCards();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [page]);
+
 	useEffect(() => {
 		setPage(1);
 		gone.clear();
@@ -142,11 +123,6 @@ function Deck(props: Deckprops) {
 		fetchCards();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [filters]);
-	useEffect(() => {
-		console.log("cards", cards);
-		console.log("hiddenCardIndex", hiddenCardIndex);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [cards, refresh]);
 
 	/* const buscarObjeto = () => {
 		const objeto = cards[current].foreignNames.find((objeto: any) => {
@@ -210,8 +186,8 @@ function Deck(props: Deckprops) {
 				const scale = down ? 1.1 : 1;
 
 				//* Si pasa a la derecha lo añade a la store
-				if (x >= 664 && isGone) {
-					console.log("cards[index]", cards[index]);
+				console.log("cards[index]", x);
+				if (x >= window.innerWidth && isGone) {
 					handleAddStore(cards[index]);
 					/* 	setTimeout(() => {
 						setHiddenCardIndex((prevSet) =>

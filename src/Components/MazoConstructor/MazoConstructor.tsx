@@ -1,72 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { ReactSVG } from "react-svg";
+import { useDispatch } from "react-redux";
 import {
 	cardRemoveAll,
 	idMazoAdd,
 	mazoRemove,
-	mazoRemoveAll,
 	cardRemove,
-	mazoListAdd,
 	mazoAddOne,
 } from "../../store";
-import cardsIcon from "../../Media/cards.png";
-import saveIcon from "../../Media/saveIcon.png";
-import newIcon from "../../Media/newIcon.png";
-import deleteIcon from "../../Media/deleteIcon.png";
-import listIcon from "../../Media/listIcon.png";
-import { library } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-	faArrowDownShortWide,
-	faArrowsUpDown,
 	faBookmark,
-	faDownLong,
 	faFile,
 	faListSquares,
-	faSquare,
 	faTrash,
-	faTurnDown,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faBuromobelexperte } from "@fortawesome/free-brands-svg-icons";
-import {
-	Button,
-	List,
-	Image,
-	Table,
-	Header,
-	Container,
-} from "semantic-ui-react";
+import { Button, Image, Table, Header } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
-import "./MazoConstructor.css";
-library.add(faBuromobelexperte, faBookmark, faFile);
 
-interface Card {
-	name: string;
-	imageUrl: string;
-	id: string;
-	manaCost: string;
-	originalType: string;
-	rarity: string;
-	types: [];
-	subtypes: [];
-	originalText: string;
-}
+import "./MazoConstructor.css";
+import { CardData } from "../../Helpers/Interfaces";
+/* import { library } from "@fortawesome/fontawesome-svg-core"; */
+/* library.add(faBuromobelexperte, faBookmark, faFile, faListSquares, faTrash); */
 
 interface Mazo {
 	IDMazo: number;
-	Cards: Card[];
+	Cards: CardData[];
 }
 
 interface MazoConstructorProps {
-	mazo: Mazo;
+	cardView: Mazo;
 }
 
-function MazoConstructor({ mazo }: MazoConstructorProps) {
+function MazoConstructor({ cardView }: MazoConstructorProps) {
 	const [isLista, setLista] = useState(true);
-	const [status, setStatus] = useState("");
-
+	/* const [scrollDirection, setScrollDirection] = React.useState("down"); */
 	const dispatch = useDispatch();
 
 	//! Borra una carta del cardView
@@ -87,7 +56,6 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 	//! Salva un mazo nuevo
 	const handleListaSave = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setStatus("Saving");
 
 		//*Agarra el token del local storage
 		const newData = JSON.parse(
@@ -101,9 +69,10 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 		}
 
 		//* Si existe el mazo update sino crea uno nuevo
-		if (mazo.IDMazo) {
-			//Update
+		if (cardView.IDMazo) {
+			//!Update
 		} else {
+			//TODO
 			const res = await fetch(
 				"http://localhost:" + process.env.REACT_APP_PORT + "/mazos/",
 				{
@@ -117,7 +86,7 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 						password: "123456789",
 						NameMazo: "222sasa",
 						User: 1,
-						Lista: mazo.Cards,
+						Lista: cardView.Cards,
 					}),
 				}
 			)
@@ -131,14 +100,14 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 							//* Añade el IDMAzo y las cartas a la store.cardview
 							dispatch(
 								idMazoAdd({
-									Cards: mazo.Cards,
+									Cards: cardView.Cards,
 									IDMazo: data.questionID,
 								})
 							);
 							//* Añade el mazo a la store.mazos
 							const nuevoObjeto = {
-								id: data.questionID,
-								NameMazo: "kjahjk",
+								ID: data.questionID,
+								NameMazo: data.questionID,
 								User: 1,
 							};
 							dispatch(mazoAddOne(nuevoObjeto));
@@ -153,12 +122,6 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 
 	//! Borra el mazo
 	const handleMazoDelete = async (IDmazo: number) => {
-		//* Borra toda la store.cardview
-		dispatch(cardRemoveAll());
-		//* Borra el mazo la store.mazos
-		dispatch(mazoRemove(IDmazo));
-
-		setStatus("Saving");
 		//*Agarra el token del local storage
 		const newData = JSON.parse(
 			localStorage.getItem("redux_localstorage_simple_user") || ""
@@ -188,8 +151,11 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 						throw new Error(text);
 					});
 				} else {
-					res.json().then((data) => {});
-					dispatch(mazoRemoveAll());
+					/* res.json().then((data) => {}); */
+					//* Borra toda la store.cardview
+					dispatch(cardRemoveAll());
+					//* Borra el mazo la store.mazos
+					dispatch(mazoRemove(IDmazo));
 				}
 			})
 			.catch((err) => {
@@ -197,13 +163,38 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 			});
 	};
 
+	/* 
+	const handleDownUp = () => {
+		if (scrollDirection === "down") {
+			window.scrollBy({
+				top: document.documentElement.scrollHeight,
+				behavior: "smooth",
+			});
+			setScrollDirection("up");
+		} else {
+			window.scrollBy({
+				top: -document.documentElement.scrollHeight,
+				behavior: "smooth",
+			});
+			setScrollDirection("down");
+		}
+	}; */
+
 	// Renderiza la lista de mazos
+
 	return (
 		<div className="content-MazoConstructor">
 			<div className="WrapperMazoConstructor">
+				{/* 	<div className="downIcon">
+					<FontAwesomeIcon
+						icon={faArrowsUpDown}
+						size="xl"
+						onClick={() => handleDownUp()}
+					/>
+				</div> */}
 				<div>
-					{mazo.IDMazo ? mazo.IDMazo : "(Not Saved)"} -
-					{mazo.Cards && mazo.Cards.length}
+					{cardView.IDMazo ? cardView.IDMazo : "(Not Saved)"} -
+					{cardView.Cards && cardView.Cards.length}
 				</div>
 				<div className="menu-MazoConsructor">
 					<div className="Buttons">
@@ -243,7 +234,7 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 								icon={faFile}
 							/>
 						</div>
-						<div onClick={() => handleMazoDelete(mazo.IDMazo)}>
+						<div onClick={() => handleMazoDelete(cardView.IDMazo)}>
 							<FontAwesomeIcon
 								className="deleteIcon"
 								size="xl"
@@ -255,11 +246,11 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 			</div>
 			<Table compact celled>
 				<Table.Header>
-					<Table.HeaderCell>Mazo {mazo.IDMazo}</Table.HeaderCell>
+					<Table.HeaderCell>Mazo {cardView.IDMazo}</Table.HeaderCell>
 				</Table.Header>
 				<Table.Body>
-					{mazo.Cards &&
-						mazo.Cards.map((mazoItem, index) => (
+					{cardView.Cards &&
+						cardView.Cards.map((mazoItem, index) => (
 							<Table.Row>
 								{isLista ? (
 									<>
@@ -324,6 +315,12 @@ function MazoConstructor({ mazo }: MazoConstructorProps) {
 													handleRemoveMazo(index)
 												}
 												icon="trash"
+											/>
+											<Button
+												onClick={() =>
+													handleAddPortada(index)
+												}
+												icon="image"
 											/>
 										</Table.Cell>
 									</>

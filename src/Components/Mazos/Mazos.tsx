@@ -40,6 +40,7 @@ interface MazosProps {
 }
 
 function Mazos({ mazos }: MazosProps) {
+	console.log("mazos", mazos);
 	const [cardView, setCardView] = useState<CardViewState | null>(null);
 	const [menu, setMenu] = useState<boolean>(false);
 
@@ -57,13 +58,6 @@ function Mazos({ mazos }: MazosProps) {
 	if (newData) {
 		token = newData.data.token;
 	}
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		fetchMazos();
-	}, []);
-
 	const fetchMazos = async () => {
 		try {
 			const res = await fetch(
@@ -89,6 +83,12 @@ function Mazos({ mazos }: MazosProps) {
 			console.log("Error:", err);
 		}
 	};
+
+	useEffect(() => {
+		fetchMazos();
+	}, []);
+
+	const dispatch = useDispatch();
 
 	const fetchSavedMazos = async (IdMazo: number) => {
 		try {

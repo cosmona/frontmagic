@@ -11,6 +11,7 @@ function NavbarLoginSignup(props: LoginSignupProps) {
 
 	const handleClickLogin = () => {
 		setShowLogin(true);
+		console.log("true");
 	};
 
 	const handleClickSignUp = () => {};

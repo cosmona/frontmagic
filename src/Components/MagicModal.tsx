@@ -10,6 +10,7 @@ interface MagicModalProps {
 
 function MagicModal(props: MagicModalProps): React.JSX.Element {
 	const { title, show } = props;
+	console.log("showshow", show);
 
 	return (
 		<div className={`MagicModalContainer${show ? "Show" : "Hidden"}`}>

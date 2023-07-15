@@ -1,32 +1,6 @@
 import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { save, load } from "redux-localstorage-simple";
-
-interface UserState {
-	user: any; // Ajusta el tipo de usuario según tus necesidades
-}
-
-interface Mazo {
-	id: number;
-	// Propiedades del mazo
-}
-
-interface Card {
-	name: string;
-	imageUrl: string;
-	id: string;
-	manaCost: string;
-	originalType: string;
-	rarity: string;
-	types: [];
-	subtypes: [];
-	originalText: string;
-	// Propiedades de la carta
-}
-
-interface CardViewState {
-	Cards: Card[];
-	IDMazo: number | null;
-}
+import { CardData, UserState } from "./Helpers/Interfaces";
 
 const userSlice = createSlice({
 	name: "user",
@@ -38,6 +12,11 @@ const userSlice = createSlice({
 });
 
 export const { userLogin, userLogout } = userSlice.actions;
+
+interface Mazo {
+	ID: number;
+	// Propiedades del mazo
+}
 
 const mazoSlize = createSlice({
 	name: "mazos",
@@ -55,7 +34,13 @@ const mazoSlize = createSlice({
 
 		mazoRemove: (state, action: PayloadAction<number>) => {
 			const IDMazo = action.payload;
+			// Filtrar los elementos y asignar el nuevo estado filtrado
+			const index = state.findIndex((item) => item.ID === IDMazo);
+			if (index !== -1) {
+				state.splice(index, 1);
+			}
 		},
+
 		mazoRemoveAll: (state) => {
 			state.length = 0; // Borra todos los elementos del estado
 		},
@@ -66,7 +51,7 @@ export const { mazoListAdd, mazoRemove, mazoRemoveAll, mazoAddOne } =
 	mazoSlize.actions;
 
 interface CardViewState {
-	Cards: Card[];
+	Cards: CardData[];
 	IDMazo: number | null;
 }
 
@@ -74,14 +59,13 @@ const cardViewSlize = createSlice({
 	name: "cardview",
 	initialState: { Cards: [], IDMazo: null } as CardViewState,
 	reducers: {
-		cardAddOne: (state, action: PayloadAction<Card>) => {
+		cardAddOne: (state, action: PayloadAction<CardData>) => {
 			const nuevaCarta = action.payload;
 			state.Cards.push(nuevaCarta);
 		},
 
 		cardRemove: (state, action: PayloadAction<number>) => {
 			const index = action.payload;
-			console.log("state.Cards.length", state.Cards.length);
 			if (index >= 0 && index < state.Cards.length) {
 				state.Cards.splice(index, 1);
 			}
@@ -89,7 +73,7 @@ const cardViewSlize = createSlice({
 
 		idMazoAdd: (
 			state,
-			action: PayloadAction<{ IDMazo: number; Cards: Card[] }>
+			action: PayloadAction<{ IDMazo: number; Cards: CardData[] }>
 		) => {
 			const { IDMazo, Cards } = action.payload;
 			const newState = { Cards, IDMazo: IDMazo };
@@ -99,7 +83,7 @@ const cardViewSlize = createSlice({
 
 		cardAdd: (
 			state,
-			action: PayloadAction<{ IDMazo: number; Cards: Card[] }>
+			action: PayloadAction<{ IDMazo: number; Cards: CardData[] }>
 		) => {
 			const { Cards, IDMazo } = action.payload;
 			state.IDMazo = IDMazo;

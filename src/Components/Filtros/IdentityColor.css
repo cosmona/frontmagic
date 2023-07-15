@@ -1,0 +1,19 @@
+.wrapperIdentityColor {
+	display: flex;
+	flex-direction: row;
+	height: 8vh;
+	align-items: center;
+	justify-content: space-around;
+	width: 90vw;
+	min-width: 375px;
+}
+.buttonNext {
+	height: 20px;
+	color: #227099;
+}
+
+.IdentityColor {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+}
