@@ -1,22 +1,17 @@
 import { configureStore, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { save, load } from "redux-localstorage-simple";
-import { CardData, UserState } from "./Helpers/Interfaces";
+import { CardData, Mazo, UserState, CardViewState } from "./Helpers/Interfaces";
 
 const userSlice = createSlice({
 	name: "user",
 	initialState: null as UserState | null,
 	reducers: {
 		userLogin: (state, action: PayloadAction<UserState>) => action.payload,
-		userLogout: (state, action) => null,
+		userLogout: (state) => null,
 	},
 });
 
 export const { userLogin, userLogout } = userSlice.actions;
-
-interface Mazo {
-	ID: number;
-	// Propiedades del mazo
-}
 
 const mazoSlize = createSlice({
 	name: "mazos",
@@ -32,7 +27,7 @@ const mazoSlize = createSlice({
 			state.push(nuevoObjeto);
 		},
 
-		mazoRemove: (state, action: PayloadAction<number>) => {
+		mazoRemove: (state, action: PayloadAction<number | null>) => {
 			const IDMazo = action.payload;
 			// Filtrar los elementos y asignar el nuevo estado filtrado
 			const index = state.findIndex((item) => item.ID === IDMazo);
@@ -50,14 +45,9 @@ const mazoSlize = createSlice({
 export const { mazoListAdd, mazoRemove, mazoRemoveAll, mazoAddOne } =
 	mazoSlize.actions;
 
-interface CardViewState {
-	Cards: CardData[];
-	IDMazo: number | null;
-}
-
 const cardViewSlize = createSlice({
 	name: "cardview",
-	initialState: { Cards: [], IDMazo: null } as CardViewState,
+	initialState: { Cards: [], IDMazo: null, FrontPage: null } as CardViewState,
 	reducers: {
 		cardAddOne: (state, action: PayloadAction<CardData>) => {
 			const nuevaCarta = action.payload;
@@ -83,28 +73,37 @@ const cardViewSlize = createSlice({
 
 		cardAdd: (
 			state,
-			action: PayloadAction<{ IDMazo: number; Cards: CardData[] }>
+			action: PayloadAction<{
+				IDMazo: number;
+				FrontPage: string;
+				Cards: CardData[];
+			}>
 		) => {
-			const { Cards, IDMazo } = action.payload;
+			const { Cards, IDMazo, FrontPage } = action.payload;
 			state.IDMazo = IDMazo;
+			state.FrontPage = FrontPage;
 			state.Cards = Cards;
 		},
 
 		cardRemoveAll: (state) => {
 			state.Cards.length = 0;
 			state.IDMazo = null;
+			state.FrontPage = null;
+		},
+		cardFrontPageAdd: (state, action) => {
+			state.FrontPage = action.payload;
 		},
 	},
 });
 
-export const { cardAdd, cardRemoveAll, cardAddOne, idMazoAdd, cardRemove } =
-	cardViewSlize.actions;
-
-interface RootState {
-	user: UserState | null;
-	mazos: Mazo[];
-	cardview: CardViewState;
-}
+export const {
+	cardAdd,
+	cardRemoveAll,
+	cardAddOne,
+	idMazoAdd,
+	cardRemove,
+	cardFrontPageAdd,
+} = cardViewSlize.actions;
 
 const option = {
 	states: ["user", "mazos", "cardview"],

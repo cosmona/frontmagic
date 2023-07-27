@@ -6,6 +6,7 @@ import AddButtons from "../AddButtons/AddButtons";
 import { handleNext, handleLast } from "../../Helpers/Helpers";
 import { obtenerLetras } from "../../Helpers/Helpers";
 import Swipe from "../Swipe/Swipe";
+import { FilterState, FiltrosProps } from "../../Helpers/Interfaces";
 
 interface Card {
 	name: string;
@@ -19,21 +20,9 @@ interface ForeignName {
 	imageUrl: string;
 }
 
-interface Filters {
-	ColorRed: boolean;
-	ColorBlack: boolean;
-	ColorGreen: boolean;
-	ColorWhite: boolean;
-	ColorBlue: boolean;
-}
-
-interface CartasProps {
-	filters: Filters[];
-}
-
-function Cartas({ filters }: CartasProps): JSX.Element {
-	const { ColorRed, ColorBlack, ColorGreen, ColorWhite, ColorBlue } =
-		filters[0];
+function Cartas(props: FiltrosProps) {
+	const { filters, setFilters } = props;
+	const { ColorRed, ColorBlack, ColorGreen, ColorWhite, ColorBlue } = filters;
 
 	const [cards, setCards] = useState<Card[]>([]);
 	const [page, setPage] = useState<number>(1);
@@ -43,7 +32,7 @@ function Cartas({ filters }: CartasProps): JSX.Element {
 	const fetchCards = async (): Promise<void> => {
 		setLoading(true);
 		try {
-			const letrasComb = obtenerLetras(filters[0]);
+			const letrasComb = obtenerLetras(filters);
 
 			const response = await axios.get(
 				"https://api.magicthegathering.io/v1/cards",

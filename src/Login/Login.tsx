@@ -21,14 +21,16 @@ function Login(props: NavbarLoginSignupProps): JSX.Element {
 	const handleCloseModal = () => {
 		setShowLogin(false);
 	};
-	const handleLogin = async (e: any) => {
-		// Call sethShow from parent(setShowLogin) function and set to false for close the modal
 
+	const handleLogin = async (e: any) => {
 		e.preventDefault();
 		setStatus("loading");
 
 		const res = await fetch(
-			"http://localhost:" + process.env.REACT_APP_PORT + "/users/login/",
+			/* "http://localhost:" + process.env.REACT_APP_PORT + "/users/login/", */
+			"http://192.168.0.21:" +
+				process.env.REACT_APP_PORT +
+				"/users/login/",
 			{
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -81,8 +83,12 @@ function Login(props: NavbarLoginSignupProps): JSX.Element {
 				{status === "error" && (
 					<p className="error">Usuario o contraseña incorrectos.</p>
 				)}
-				<div onClick={handleLogin}>Entrar</div>
-				<div onClick={handleCloseModal}>Cerrar</div>
+				<div className="EntrarButton" onClick={handleLogin}>
+					Entrar
+				</div>
+				<div className="CerrarButton" onClick={handleCloseModal}>
+					Cerrar
+				</div>
 			</form>
 		</Fragment>
 	);

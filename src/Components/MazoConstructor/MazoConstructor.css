@@ -53,4 +53,25 @@
 }
 .wrapperData {
 	width: 100vw;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+}
+.FirstRow {
+	display: flex;
+	flex-direction: row;
+}
+
+.WrapperFirstRow {
+	display: flex;
+	flex-direction: column;
+}
+.Name {
+	font-size: 22px;
+	margin: 5px 0px 0px 5px;
+}
+.Type {
+	font-size: 15px;
+	margin: 0px 0px 0px 5px;
+	color: #47ace2;
 }

@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Select } from "semantic-ui-react";
-import { FilterState } from "../../Helpers/Interfaces";
+import { Button, ButtonProps, Input, Select } from "semantic-ui-react";
+import { MenuFiltersSetFiltersProps } from "../../Helpers/Interfaces";
 
-interface Componente1Props {
-	menu: boolean;
-	filters: FilterState;
-	setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
-}
-const TextFilter: React.FC<Componente1Props> = ({
+const TextFilter: React.FC<MenuFiltersSetFiltersProps> = ({
 	menu,
 	filters,
 	setFilters,
@@ -19,6 +14,23 @@ const TextFilter: React.FC<Componente1Props> = ({
 		{ key: "name", text: "name", value: "name" },
 		{ key: "text", text: "text", value: "text" },
 	];
+	const handleSelectTextFilter = (
+		item: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+		data: ButtonProps
+	) => {
+		if (campo === "name")
+			setFilters((prevFilters: any) => ({
+				...prevFilters,
+				Name: `${valor}`,
+				Text: null,
+			}));
+		if (campo === "text")
+			setFilters((prevFilters: any) => ({
+				...prevFilters,
+				Name: null,
+				Text: `${valor}`,
+			}));
+	};
 
 	return (
 		<div className={menu ? "TextFilter" : "TextFilter hide"}>
@@ -28,35 +40,20 @@ const TextFilter: React.FC<Componente1Props> = ({
 				type="text"
 				placeholder="Search..."
 				action
+			/>
+			<Select
+				className="SelectTextFilter"
+				options={options}
+				defaultValue={"name"}
+				onChange={(item: any) => setCampo(item.target.innerText)}
+			/>
+			<Button
+				className="buttonTextFilter"
+				type="submit"
+				onClick={(item, data) => handleSelectTextFilter(item, data)}
 			>
-				<input />
-				<Select
-					className="SelectTextFilter"
-					options={options}
-					defaultValue={"name"}
-					onChange={(item: any) => setCampo(item.target.innerText)}
-				/>
-				<Button
-					className="buttonTextFilter"
-					type="submit"
-					onClick={(item, data) => {
-						if (campo === "name")
-							setFilters((prevFilters: any) => ({
-								...prevFilters,
-								Name: `${valor}`,
-								Text: null,
-							}));
-						if (campo === "text")
-							setFilters((prevFilters: any) => ({
-								...prevFilters,
-								Name: null,
-								Text: `${valor}`,
-							}));
-					}}
-				>
-					Search
-				</Button>
-			</Input>
+				Search
+			</Button>
 		</div>
 	);
 };

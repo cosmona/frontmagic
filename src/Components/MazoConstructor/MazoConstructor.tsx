@@ -6,6 +6,7 @@ import {
 	mazoRemove,
 	cardRemove,
 	mazoAddOne,
+	cardFrontPageAdd,
 } from "../../store";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -16,21 +17,15 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { faBuromobelexperte } from "@fortawesome/free-brands-svg-icons";
-import { Button, Image, Table, Header } from "semantic-ui-react";
+import { Button, Image, Table, Header, Icon } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
 
 import "./MazoConstructor.css";
-import { CardData } from "../../Helpers/Interfaces";
-/* import { library } from "@fortawesome/fontawesome-svg-core"; */
-/* library.add(faBuromobelexperte, faBookmark, faFile, faListSquares, faTrash); */
-
-interface Mazo {
-	IDMazo: number;
-	Cards: CardData[];
-}
+import { CardData, CardViewState } from "../../Helpers/Interfaces";
+import { WhatsappIcon, WhatsappShareButton } from "react-share";
 
 interface MazoConstructorProps {
-	cardView: Mazo;
+	cardView: CardViewState;
 }
 
 function MazoConstructor({ cardView }: MazoConstructorProps) {
@@ -41,6 +36,11 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 	//! Borra una carta del cardView
 	const handleRemoveMazo = (index: number) => {
 		dispatch(cardRemove(index));
+	};
+
+	//!Establece la carta como portada
+	const handleAddPortada = (imageUrl: any) => {
+		dispatch(cardFrontPageAdd(imageUrl));
 	};
 
 	//!Controla la vista si es lista o galeria
@@ -74,7 +74,8 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 		} else {
 			//TODO
 			const res = await fetch(
-				"http://localhost:" + process.env.REACT_APP_PORT + "/mazos/",
+				/* "http://localhost:" + process.env.REACT_APP_PORT + "/mazos/", */
+				"http://192.168.0.21:" + process.env.REACT_APP_PORT + "/mazos/",
 				{
 					method: "POST",
 					headers: {
@@ -86,6 +87,7 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 						password: "123456789",
 						NameMazo: "222sasa",
 						User: 1,
+						FrontPage: cardView.FrontPage,
 						Lista: cardView.Cards,
 					}),
 				}
@@ -121,7 +123,7 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 	};
 
 	//! Borra el mazo
-	const handleMazoDelete = async (IDmazo: number) => {
+	const handleMazoDelete = async (IDmazo: number | null) => {
 		//*Agarra el token del local storage
 		const newData = JSON.parse(
 			localStorage.getItem("redux_localstorage_simple_user") || ""
@@ -132,7 +134,8 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 		}
 
 		const res = await fetch(
-			"http://localhost:" +
+			/* "http://localhost:" + */
+			"http://192.168.0.21:" +
 				process.env.REACT_APP_PORT +
 				"/deletemazo/" +
 				IDmazo +
@@ -181,7 +184,16 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 	}; */
 
 	// Renderiza la lista de mazos
-
+	const imageStyles = {
+		width: "100vw",
+		height: "100px",
+		backgroundRepeat: "no-repeat",
+		backgroundImage: `url(${cardView.FrontPage})`,
+		backgroundSize: "455px auto",
+		backgroundPosition: "-40px -130px",
+		color: "white",
+		fontSize: "25px",
+	};
 	return (
 		<div className="content-MazoConstructor">
 			<div className="WrapperMazoConstructor">
@@ -199,54 +211,33 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 				<div className="menu-MazoConsructor">
 					<div className="Buttons">
 						{isLista ? (
-							<div
-								className="cardsIcon"
+							<Icon
 								onClick={handleListaView}
-							>
-								<FontAwesomeIcon
-									size="xl"
-									icon={faBuromobelexperte}
-								/>
-							</div>
+								size="large"
+								name="th"
+							/>
 						) : (
-							<div onClick={handleListaView}>
-								<FontAwesomeIcon
-									className="listicon"
-									size="xl"
-									icon={faListSquares}
-								/>
-							</div>
+							<Icon
+								onClick={handleListaView}
+								size="large"
+								name="th list"
+							/>
 						)}
-
 						<div onClick={handleListaSave}>
-							<FontAwesomeIcon
-								className="saveIcon"
-								icon={faBookmark}
-								size="xl"
-								style={{ color: "#ffffff" }}
-							/>
+							<Icon size="large" name="save" />
 						</div>
-
 						<div onClick={handleListaDelete}>
-							<FontAwesomeIcon
-								className="newIcon"
-								size="xl"
-								icon={faFile}
-							/>
+							<Icon size="large" name="eraser" />
 						</div>
 						<div onClick={() => handleMazoDelete(cardView.IDMazo)}>
-							<FontAwesomeIcon
-								className="deleteIcon"
-								size="xl"
-								icon={faTrash}
-							/>
+							<Icon size="large" name="trash" />
 						</div>
 					</div>
 				</div>
 			</div>
 			<Table compact celled>
-				<Table.Header>
-					<Table.HeaderCell>Mazo {cardView.IDMazo}</Table.HeaderCell>
+				<Table.Header style={imageStyles}>
+					Mazo {cardView.IDMazo}
 				</Table.Header>
 				<Table.Body>
 					{cardView.Cards &&
@@ -254,25 +245,30 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 							<Table.Row>
 								{isLista ? (
 									<>
+										{console.log("mazoItem", mazoItem)}
 										<Table.Cell>
 											<Header.Content>
-												<Header as="h4" image>
+												<Header image>
 													<Header>
-														<Image
-															className="imagePreview"
-															imagePreview
-															src={
-																mazoItem.imageUrl
-															}
-														/>
-														<div>
-															<div>
-																{mazoItem.name}
-															</div>
-															<div>
-																{
-																	mazoItem.originalType
+														<div className="FirstRow">
+															<Image
+																className="imagePreview"
+																imagePreview
+																src={
+																	mazoItem.imageUrl
 																}
+															/>
+															<div className="WrapperFirstRow">
+																<div className="Name">
+																	{
+																		mazoItem.name
+																	}
+																</div>
+																<div className="Type">
+																	{
+																		mazoItem.originalType
+																	}
+																</div>
 															</div>
 														</div>
 													</Header>
@@ -295,19 +291,23 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 												</Table.HeaderCell>
 												{mazoItem.rarity}
 											</Table.Cell>
-											<Table.Cell>
-												{" "}
-												<Table.HeaderCell>
-													Types
-												</Table.HeaderCell>
-												{mazoItem.types}
-											</Table.Cell>
-											<Table.Cell>
-												<Table.HeaderCell>
-													Subtypes
-												</Table.HeaderCell>
-												{mazoItem.subtypes}
-											</Table.Cell>
+											{mazoItem.types && (
+												<Table.Cell>
+													<Table.HeaderCell>
+														Types
+													</Table.HeaderCell>
+													{mazoItem.types}
+												</Table.Cell>
+											)}
+
+											{mazoItem.subtypes && (
+												<Table.Cell>
+													<Table.HeaderCell>
+														Subtypes
+													</Table.HeaderCell>
+													{mazoItem.subtypes}
+												</Table.Cell>
+											)}
 										</div>
 										<Table.Cell collapsing>
 											<Button
@@ -318,10 +318,24 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 											/>
 											<Button
 												onClick={() =>
-													handleAddPortada(index)
+													handleAddPortada(
+														mazoItem.imageUrl
+													)
 												}
 												icon="image"
 											/>
+											<WhatsappShareButton
+												url={mazoItem.imageUrl}
+												title={mazoItem.imageUrl}
+											>
+												<img
+													src={mazoItem.imageUrl}
+													alt={mazoItem.name}
+													style={{ display: "none" }}
+												/>
+												<WhatsappIcon size={32} round />{" "}
+												{/* Puedes ajustar el tamaño del ícono */}
+											</WhatsappShareButton>
 										</Table.Cell>
 									</>
 								) : (

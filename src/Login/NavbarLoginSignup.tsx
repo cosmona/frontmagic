@@ -1,17 +1,13 @@
 import React from "react";
+import { LoginSignupProps } from "../Helpers/Interfaces";
 
 import "./NavbarLoginSignup.css";
-
-interface LoginSignupProps {
-	setShowLogin: (show: boolean) => void;
-}
 
 function NavbarLoginSignup(props: LoginSignupProps) {
 	const { setShowLogin } = props;
 
 	const handleClickLogin = () => {
 		setShowLogin(true);
-		console.log("true");
 	};
 
 	const handleClickSignUp = () => {};

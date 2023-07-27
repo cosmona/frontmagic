@@ -10,7 +10,6 @@ interface NavbarLoginSignupProps {
 function ModalLogin(props: NavbarLoginSignupProps): React.JSX.Element {
 	const { show, setShowLogin } = props;
 
-	console.log("show", show);
 	return (
 		<MagicModal title="Inicio de sesion" show={show}>
 			<Login setShowLogin={setShowLogin} />

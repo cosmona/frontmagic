@@ -10,32 +10,20 @@ import Tipo from "./Tipo";
 import Legalidades from "./Legalidades";
 import FilterStatusBar from "./FilterStatusBar";
 
+import { FiltrosProps } from "../../Helpers/Interfaces";
 import "./Filtros.css";
-import { FilterState } from "../../Helpers/Interfaces";
 
-interface FiltrosProps {
-	filters: FilterState;
-	setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
-}
-
-const Filtros = (props: FiltrosProps) => {
+const Filtros = (props: FiltrosProps): React.JSX.Element => {
 	const { filters, setFilters } = props;
-	const [menu, setMenu] = useState<boolean>(false);
 
-	useEffect(() => {
-		console.log("filters", filters);
-	}, [filters]);
+	const [menu, setMenu] = useState<boolean>(false);
+	useEffect(() => {}, [filters]);
 
 	return (
 		<>
 			<IdentityColor filters={filters} setFilters={setFilters} />
 			<Form>
 				<div className="wrapperForm">
-					<Rarity
-						filters={filters}
-						setFilters={setFilters}
-						menu={menu}
-					/>
 					<TextFilter
 						menu={menu}
 						filters={filters}
@@ -43,6 +31,11 @@ const Filtros = (props: FiltrosProps) => {
 					/>
 					<Tipo menu={menu} setFilters={setFilters} />
 					<Legalidades menu={menu} setFilters={setFilters} />
+					<Rarity
+						filters={filters}
+						setFilters={setFilters}
+						menu={menu}
+					/>
 				</div>
 			</Form>
 

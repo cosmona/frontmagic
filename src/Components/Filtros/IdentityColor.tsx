@@ -10,157 +10,99 @@ import blueMana from "../../Media/BlueMana.png";
 import blackMana from "../../Media/blackMana.png";
 import whiteMana from "../../Media/whiteMana.png";
 import greenMana from "../../Media/greenMana.png";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faCircleChevronLeft,
-	faCircleChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { FiltrosProps } from "../../Helpers/Interfaces";
+import { Icon } from "semantic-ui-react";
+import { ImageGenerator } from "../../Helpers/Helpers";
+
 import "./IdentityColor.css";
-import { FilterState } from "../../Helpers/Interfaces";
 
-interface Componente1Props {
-	filters: FilterState;
-	setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
-}
-
-const Componente1: React.FC<Componente1Props> = ({ filters, setFilters }) => (
-	<div className="IdentityColor">
-		<img
-			className={filters.ColorRed ? "iconFiltros border" : "iconFiltros"}
-			src={ColorRed}
-			alt="Rojo"
-			onClick={() =>
-				setFilters((prevFilters) => ({
-					...prevFilters,
-					ColorRed: !prevFilters.ColorRed,
-				}))
-			}
-		/>
-		<img
-			className={
-				filters.ColorBlack ? "iconFiltros border" : "iconFiltros"
-			}
-			src={ColorBlack}
-			alt="Negro"
-			onClick={() =>
-				setFilters((prevFilters) => ({
-					...prevFilters,
-					ColorBlack: !prevFilters.ColorBlack,
-				}))
-			}
-		/>
-		<img
-			className={
-				filters.ColorGreen ? "iconFiltros border" : "iconFiltros"
-			}
-			src={ColorGreen}
-			alt="Verde"
-			onClick={() =>
-				setFilters((prevFilters) => ({
-					...prevFilters,
-					ColorGreen: !prevFilters.ColorGreen,
-				}))
-			}
-		/>
-		<img
-			className={
-				filters.ColorWhite ? "iconFiltros border" : "iconFiltros"
-			}
-			src={ColorWhite}
-			alt="Blanco"
-			onClick={() =>
-				setFilters((prevFilters) => ({
-					...prevFilters,
-					ColorWhite: !prevFilters.ColorWhite,
-				}))
-			}
-		/>
-		<img
-			className={filters.ColorBlue ? "iconFiltros border" : "iconFiltros"}
-			src={ColorBlue}
-			alt="Azul"
-			onClick={() =>
-				setFilters((prevFilters) => ({
-					...prevFilters,
-					ColorBlue: !prevFilters.ColorBlue,
-				}))
-			}
-		/>
-	</div>
-);
-
-const Componente2: React.FC<Componente1Props> = ({ filters, setFilters }) => (
+const NormalColorFilter: React.FC<FiltrosProps> = ({ filters, setFilters }) => {
+	return (
+		<div className="IdentityColor">
+			<ImageGenerator
+				field={"ColorRed"}
+				img={ColorRed}
+				filters={filters}
+				setFilters={setFilters}
+				clase="iconFiltros"
+			/>
+			<ImageGenerator
+				field={"ColorBlack"}
+				img={ColorBlack}
+				filters={filters}
+				setFilters={setFilters}
+				clase="iconFiltros"
+			/>
+			<ImageGenerator
+				field={"ColorGreen"}
+				img={ColorGreen}
+				filters={filters}
+				setFilters={setFilters}
+				clase="iconFiltros"
+			/>
+			<ImageGenerator
+				field={"ColorWhite"}
+				img={ColorWhite}
+				filters={filters}
+				setFilters={setFilters}
+				clase="iconFiltros"
+			/>
+			<ImageGenerator
+				field={"ColorBlue"}
+				img={ColorBlue}
+				filters={filters}
+				setFilters={setFilters}
+				clase="iconFiltros"
+			/>
+		</div>
+	);
+};
+const AvancedColorFilter: React.FC<FiltrosProps> = ({
+	filters,
+	setFilters,
+}) => (
 	<div>
 		<div className="IdentityColor">
-			<img
-				className={filters.ColorRed ? "iconLitle border" : "iconLitle"}
-				src={redMana}
-				alt="Rojo"
-				onClick={() =>
-					setFilters((prevFilters) => ({
-						...prevFilters,
-						ColorRed: !prevFilters.ColorRed,
-					}))
-				}
+			<ImageGenerator
+				field={"ColorRed"}
+				img={redMana}
+				filters={filters}
+				setFilters={setFilters}
+				clase="iconLitle"
 			/>
-			<img
-				className={
-					filters.ColorBlack ? "iconLitle border" : "iconLitle"
-				}
-				src={blackMana}
-				alt="Negro"
-				onClick={() =>
-					setFilters((prevFilters) => ({
-						...prevFilters,
-						ColorBlack: !prevFilters.ColorBlack,
-					}))
-				}
+			<ImageGenerator
+				field={"ColorBlack"}
+				img={blackMana}
+				filters={filters}
+				setFilters={setFilters}
+				clase="iconLitle"
 			/>
-			<img
-				className={
-					filters.ColorGreen ? "iconLitle border" : "iconLitle"
-				}
-				src={greenMana}
-				alt="Verde"
-				onClick={() =>
-					setFilters((prevFilters) => ({
-						...prevFilters,
-						ColorGreen: !prevFilters.ColorGreen,
-					}))
-				}
+			<ImageGenerator
+				field={"ColorGreen"}
+				img={greenMana}
+				filters={filters}
+				setFilters={setFilters}
+				clase="iconLitle"
 			/>
-			<img
-				className={
-					filters.ColorWhite ? "iconLitle border" : "iconLitle"
-				}
-				src={whiteMana}
-				alt="Blanco"
-				onClick={() =>
-					setFilters((prevFilters) => ({
-						...prevFilters,
-						ColorWhite: !prevFilters.ColorWhite,
-					}))
-				}
+			<ImageGenerator
+				field={"ColorWhite"}
+				img={whiteMana}
+				filters={filters}
+				setFilters={setFilters}
+				clase="iconLitle"
 			/>
-			<img
-				className={filters.ColorBlue ? "iconLitle border" : "iconLitle"}
-				src={blueMana}
-				alt="Azul"
-				onClick={() =>
-					setFilters((prevFilters) => ({
-						...prevFilters,
-						ColorBlue: !prevFilters.ColorBlue,
-					}))
-				}
+			<ImageGenerator
+				field={"ColorBlue"}
+				img={blueMana}
+				filters={filters}
+				setFilters={setFilters}
+				clase="iconLitle"
 			/>
 		</div>
 	</div>
 );
 
-const IdentityColor: React.FC<{
-	filters: FilterState;
-	setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
-}> = ({ filters, setFilters }) => {
+const IdentityColor: React.FC<FiltrosProps> = ({ filters, setFilters }) => {
 	const [activeComponent, setActiveComponent] = useState(1);
 
 	const handleNext = () => {
@@ -169,22 +111,14 @@ const IdentityColor: React.FC<{
 
 	return (
 		<div className="wrapperIdentityColor">
-			<FontAwesomeIcon
-				className="buttonNext"
-				onClick={handleNext}
-				icon={faCircleChevronLeft}
-			/>
+			<Icon circular name="angle left" onClick={handleNext} />
 			{activeComponent === 1 && (
-				<Componente1 filters={filters} setFilters={setFilters} />
+				<NormalColorFilter filters={filters} setFilters={setFilters} />
 			)}
 			{activeComponent === 2 && (
-				<Componente2 filters={filters} setFilters={setFilters} />
+				<AvancedColorFilter filters={filters} setFilters={setFilters} />
 			)}
-			<FontAwesomeIcon
-				className="buttonNext"
-				onClick={handleNext}
-				icon={faCircleChevronRight}
-			/>
+			<Icon circular name="angle right" onClick={handleNext} />
 		</div>
 	);
 };

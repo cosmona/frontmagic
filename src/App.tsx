@@ -2,7 +2,7 @@ import Header from "./Header/Header";
 import React from "react";
 
 import { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import ModalLogin from "./Login/ModalLogin";
 import Cartas from "./Components/Cartas/Cartas";
@@ -11,33 +11,15 @@ import MazoConstructor from "./Components/MazoConstructor/MazoConstructor";
 import Mazos from "./Components/Mazos/Mazos";
 import Deck from "./Components/Cartas/Deck";
 
-import "./App.css";
 import { FilterState } from "./Helpers/Interfaces";
-import { mazoListAdd, mazoRemoveAll } from "./store";
+import "./App.css";
 
 function App() {
 	const [showLogin, setShowLogin] = useState(false);
 	/* const [showSignUp, setShowSignUp] = useState(false); */
 	const [status, setStatus] = useState("");
-	const cardView = useSelector((state: any) => state.cardview); // Actualizamos mazo directamente usando useSelector
-	const mazos = useSelector((state: any) => state.mazos); // Actualizamos mazo directamente usando useSelector
-
-	const dispatch = useDispatch();
-
-	let newData;
-
-	try {
-		newData = JSON.parse(
-			localStorage.getItem("redux_localstorage_simple_user") || ""
-		);
-	} catch (error) {
-		console.error("Error al analizar el JSON:", error);
-	}
-
-	let token: any;
-	if (newData) {
-		token = newData.data.token;
-	}
+	const cardView = useSelector((state: any) => state.cardview);
+	const mazos = useSelector((state: any) => state.mazos);
 
 	const [filters, setFilters] = useState<FilterState>({
 		ColorRed: false,
@@ -64,10 +46,10 @@ function App() {
 			<Header setShowLogin={setShowLogin} />
 			<Filtros filters={filters} setFilters={setFilters} />
 			<Mazos mazos={mazos} />
+			{/* <Cartas filters={filters} setFilters={setFilters} /> */}
 			<section className="View">
 				<Deck status={status} setStatus={setStatus} filters={filters} />
 			</section>
-
 			<MazoConstructor cardView={cardView} />
 			<ModalLogin show={showLogin} setShowLogin={setShowLogin} />
 		</div>

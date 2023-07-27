@@ -225,6 +225,7 @@ function Deck(props: Deckprops) {
 		<>
 			{cards.length > 0 && (
 				<Fragment>
+					{`Page:${page}`}
 					<div className="deck">
 						{propis.map(({ x, y, rot, scale }, index: number) => (
 							<animated.div

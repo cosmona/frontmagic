@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Icon } from "semantic-ui-react";
 
 //* Imagenes
 import ColorRed from "../../Media/redMana.png";
@@ -12,27 +13,18 @@ import Uncommon from "../../Media/Uncommon.png";
 import Rare from "../../Media/Rare.png";
 import Mythic from "../../Media/Mythic.png";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faArrowDownWideShort,
-	faArrowUpWideShort,
-} from "@fortawesome/free-solid-svg-icons";
-
+//* Interfaces
+import { MenuFiltrosProps } from "../../Helpers/Interfaces";
+//* Css
 import "./Filtros.css";
-import { FilterState } from "../../Helpers/Interfaces";
 
-interface FiltrosProps {
-	filters: FilterState;
-	menu: boolean;
-	setMenu: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const FilterStatusBar = (props: FiltrosProps) => {
+const FilterStatusBar = (props: MenuFiltrosProps) => {
 	const { filters, menu, setMenu } = props;
 	const [typeImage, setTypeImage] = useState<string | undefined>(undefined);
 	const [LegalImage, setLegalImage] = useState<string | undefined>(undefined);
 
 	useEffect(() => {
+		//? Si cambia el tipo o la legalidad guarda la nueva imagen
 		if (filters.Types) {
 			import(`../../Media/${filters.Types}.svg`)
 				.then((image) => image.default)
@@ -58,6 +50,7 @@ const FilterStatusBar = (props: FiltrosProps) => {
 				{filters.Text && `Text: ${filters.Text}`}
 				{filters.Name && `Name: ${filters.Name}`}
 			</div>
+
 			<div className="menuManaIcons">
 				{filters.ColorRed && (
 					<img className="iconLitle" src={ColorRed} alt="ColorRed" />
@@ -91,6 +84,7 @@ const FilterStatusBar = (props: FiltrosProps) => {
 					/>
 				)}
 			</div>
+
 			<div className="menuRarityIcon">
 				{filters.Common && (
 					<img className="iconLitle" src={Common} alt="Common" />
@@ -129,9 +123,9 @@ const FilterStatusBar = (props: FiltrosProps) => {
 			<div className="filterIcon">
 				Filtros{" "}
 				{menu ? (
-					<FontAwesomeIcon icon={faArrowUpWideShort} />
+					<Icon name="sort amount up" />
 				) : (
-					<FontAwesomeIcon icon={faArrowDownWideShort} />
+					<Icon name="sort amount down" />
 				)}
 			</div>
 		</div>

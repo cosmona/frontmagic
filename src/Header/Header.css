@@ -32,3 +32,13 @@
 	background-color: rgb(219, 213, 196);
 	color: #d46c77;
 }
+.LogOut {
+	background-color: rgb(34, 112, 153);
+	width: 80px;
+	height: 25px;
+	margin: 0 5px;
+	font-size: 0.9rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

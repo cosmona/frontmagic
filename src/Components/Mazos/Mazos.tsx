@@ -1,132 +1,34 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { cardAdd, cardRemoveAll } from "../../store";
+
+import { Icon } from "semantic-ui-react";
+
+import { CardViewState, MazosProps } from "../../Helpers/Interfaces";
+
 import {
-	cardAdd,
-	mazoRemoveAll,
-	cardRemoveAll,
-	mazoListAdd,
-} from "../../store";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { library } from "@fortawesome/fontawesome-svg-core";
-import {
-	faArrowAltCircleDown,
-	faArrowAltCircleUp,
-} from "@fortawesome/free-solid-svg-icons";
+	FetchMazos,
+	ImageComponent,
+	handleFetchOneSavedMazos,
+} from "../../Helpers/Helpers";
+
 import "./Mazos.css";
 
-// Registra el icono en el contexto de FontAwesome
-
-type Card = {
-	name: string;
-	imageUrl: string;
-	id: string;
-	manaCost: string;
-};
-
-interface CardViewState {
-	Cards: Card[];
-	IDMazo: number | null;
-}
-
-type Mazos = {
-	ID: number;
-	NameMazo: string;
-	User: number;
-};
-
-interface MazosProps {
-	mazos: Mazos[];
-	cardView?: CardViewState[];
-}
-
 function Mazos({ mazos }: MazosProps) {
-	console.log("mazos", mazos);
+	const dispatch = useDispatch();
 	const [cardView, setCardView] = useState<CardViewState | null>(null);
 	const [menu, setMenu] = useState<boolean>(false);
-
-	let newData;
-
-	try {
-		newData = JSON.parse(
-			localStorage.getItem("redux_localstorage_simple_user") || ""
-		);
-	} catch (error) {
-		console.error("Error al analizar el JSON:", error);
-	}
-
-	let token: any;
-	if (newData) {
-		token = newData.data.token;
-	}
-	const fetchMazos = async () => {
-		try {
-			const res = await fetch(
-				"http://localhost:" + process.env.REACT_APP_PORT + "/getmazos/",
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: token,
-					},
-				}
-			);
-
-			if (!res.ok) {
-				const errorText = await res.text();
-				throw new Error(errorText);
-			}
-
-			const data = await res.json();
-			dispatch(mazoRemoveAll());
-			dispatch(mazoListAdd(data.mazos));
-		} catch (err) {
-			console.log("Error:", err);
-		}
-	};
+	const IDMazo = useSelector((state: any) => state.cardview.IDMazo);
 
 	useEffect(() => {
-		fetchMazos();
+		FetchMazos(dispatch);
 	}, []);
 
-	const dispatch = useDispatch();
-
-	const fetchSavedMazos = async (IdMazo: number) => {
-		try {
-			const res = await fetch(
-				"http://localhost:" +
-					process.env.REACT_APP_PORT +
-					"/getmazos/" +
-					IdMazo +
-					"/",
-				{
-					method: "GET",
-					headers: {
-						"Content-Type": "application/json",
-						Authorization: token,
-					},
-				}
-			);
-
-			if (!res.ok) {
-				const errorText = await res.text();
-				throw new Error(errorText);
-			}
-
-			const data = await res.json();
-			const dataConIdMazo = { IDMazo: IdMazo, Cards: data.mazos };
-			setCardView(dataConIdMazo); // Actualiza el estado con los mazos recibidos
-			dispatch(cardAdd(dataConIdMazo));
-		} catch (err) {
-			console.log("Error:", err);
-		}
-	};
-
-	const handleLoadingMazo = (IdMazo: number) => {
-		//Borra Store
+	const handleLoadingMazo = async (IdMazo: number) => {
 		dispatch(cardRemoveAll());
-		// Carga mazo
-		//mete mazo nuevo en la store
-		fetchSavedMazos(IdMazo);
+		const dataConIdMazo: any = await handleFetchOneSavedMazos(IdMazo);
+		setCardView(dataConIdMazo);
+		dispatch(cardAdd(dataConIdMazo));
 	};
 
 	return (
@@ -136,12 +38,14 @@ function Mazos({ mazos }: MazosProps) {
 					className="TitleMazos"
 					onClick={() => setMenu((prevMenu) => !prevMenu)}
 				>
-					Mazos{" "}
+					{mazos && mazos.length} Mazos
 					<div className="filterIcon">
 						{menu ? (
-							<FontAwesomeIcon icon={faArrowAltCircleUp} />
+							<Icon name={"arrow alternate circle up outline"} />
 						) : (
-							<FontAwesomeIcon icon={faArrowAltCircleDown} />
+							<Icon
+								name={"arrow alternate circle down outline"}
+							/>
 						)}
 					</div>
 				</div>
@@ -152,13 +56,21 @@ function Mazos({ mazos }: MazosProps) {
 				>
 					{mazos &&
 						mazos.map((mazo) => (
-							<li
-								className="Card"
-								key={mazo.ID}
-								onClick={() => handleLoadingMazo(mazo.ID)}
-							>
-								{mazo.ID}
-							</li>
+							<>
+								<div
+									className={
+										mazo.ID === IDMazo
+											? "Card Active"
+											: "Card"
+									}
+									key={mazo.ID}
+									onClick={() => handleLoadingMazo(mazo.ID)}
+								>
+									{/*TODO No renderiza esto bien cuando se salva un mazo */}
+									{ImageComponent(mazo.FrontPage)}
+									{mazo.ID}
+								</div>
+							</>
 						))}
 				</ul>
 			</div>
