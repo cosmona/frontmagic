@@ -8,27 +8,15 @@ import {
 	mazoAddOne,
 	cardFrontPageAdd,
 } from "../../store";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-	faBookmark,
-	faFile,
-	faListSquares,
-	faTrash,
-} from "@fortawesome/free-solid-svg-icons";
 
-import { faBuromobelexperte } from "@fortawesome/free-brands-svg-icons";
 import { Button, Image, Table, Header, Icon } from "semantic-ui-react";
 import "semantic-ui-css/semantic.min.css";
 
 import "./MazoConstructor.css";
-import { CardData, CardViewState } from "../../Helpers/Interfaces";
 import { WhatsappIcon, WhatsappShareButton } from "react-share";
+import { MazoConstructorProps } from "../../Helpers/PropsInterfaces";
 
-interface MazoConstructorProps {
-	cardView: CardViewState;
-}
-
-function MazoConstructor({ cardView }: MazoConstructorProps) {
+function MazoConstructor({ cardView, menu, setMenu }: MazoConstructorProps) {
 	const [isLista, setLista] = useState(true);
 	/* const [scrollDirection, setScrollDirection] = React.useState("down"); */
 	const dispatch = useDispatch();
@@ -65,7 +53,6 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 		let token;
 		if (newData) {
 			token = newData.data.token;
-			console.log("token", token);
 		}
 
 		//* Si existe el mazo update sino crea uno nuevo
@@ -185,7 +172,7 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 
 	// Renderiza la lista de mazos
 	const imageStyles = {
-		width: "100vw",
+		width: "95vw",
 		height: "100px",
 		backgroundRepeat: "no-repeat",
 		backgroundImage: `url(${cardView.FrontPage})`,
@@ -193,7 +180,9 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 		backgroundPosition: "-40px -130px",
 		color: "white",
 		fontSize: "25px",
+		borderRadius: "10px 10px 0 0",
 	};
+
 	return (
 		<div className="content-MazoConstructor">
 			<div className="WrapperMazoConstructor">
@@ -232,10 +221,31 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 						<div onClick={() => handleMazoDelete(cardView.IDMazo)}>
 							<Icon size="large" name="trash" />
 						</div>
+						<div
+							className="TitleMazoConstructor"
+							onClick={() => setMenu((prevMenu) => !prevMenu)}
+						>
+							Mazo
+							<div className="filterIcon">
+								{menu ? (
+									<Icon
+										name={
+											"arrow alternate circle up outline"
+										}
+									/>
+								) : (
+									<Icon
+										name={
+											"arrow alternate circle down outline"
+										}
+									/>
+								)}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
-			<Table compact celled>
+			<Table className="TableConstructor" compact celled>
 				<Table.Header style={imageStyles}>
 					Mazo {cardView.IDMazo}
 				</Table.Header>
@@ -245,7 +255,6 @@ function MazoConstructor({ cardView }: MazoConstructorProps) {
 							<Table.Row>
 								{isLista ? (
 									<>
-										{console.log("mazoItem", mazoItem)}
 										<Table.Cell>
 											<Header.Content>
 												<Header image>

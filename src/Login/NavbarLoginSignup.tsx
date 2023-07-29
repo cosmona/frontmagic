@@ -1,5 +1,5 @@
 import React from "react";
-import { LoginSignupProps } from "../Helpers/Interfaces";
+import { LoginSignupProps } from "../Helpers/PropsInterfaces";
 
 import "./NavbarLoginSignup.css";
 

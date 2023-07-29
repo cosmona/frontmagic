@@ -111,3 +111,8 @@ export const legalities = [
 		},
 	},
 ];
+
+export const options = [
+	{ key: "name", text: "name", value: "name" },
+	{ key: "text", text: "text", value: "text" },
+];

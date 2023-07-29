@@ -20,6 +20,7 @@ function App() {
 	const [status, setStatus] = useState("");
 	const cardView = useSelector((state: any) => state.cardview);
 	const mazos = useSelector((state: any) => state.mazos);
+	const [menu, setMenu] = useState<boolean>(true);
 
 	const [filters, setFilters] = useState<FilterState>({
 		ColorRed: false,
@@ -37,9 +38,9 @@ function App() {
 		Types: null,
 	});
 
-	useEffect(() => {}, [cardView]);
+	/* useEffect(() => {}, [cardView]);
 	useEffect(() => {}, [mazos]);
-	useEffect(() => {}, [showLogin]);
+	useEffect(() => {}, [showLogin]); */
 
 	return (
 		<div className="App">
@@ -50,7 +51,13 @@ function App() {
 			<section className="View">
 				<Deck status={status} setStatus={setStatus} filters={filters} />
 			</section>
-			<MazoConstructor cardView={cardView} />
+			<div className={menu ? "footer" : "Nofooter"}>
+				<MazoConstructor
+					cardView={cardView}
+					menu={menu}
+					setMenu={setMenu}
+				/>
+			</div>
 			<ModalLogin show={showLogin} setShowLogin={setShowLogin} />
 		</div>
 	);

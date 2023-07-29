@@ -31,6 +31,23 @@ export interface CardData {
 	originalText: string;
 }
 
+export interface CardViewState {
+	Cards: CardData[];
+	IDMazo: number | null;
+	FrontPage: string | null;
+}
+
+export interface paramsInterface {
+	colorIdentity: string | null;
+	page: number;
+	pageSize: number;
+	rarity: string | null;
+	name: string | null;
+	text: string | null;
+	legalidades: string | null;
+	types: string | null;
+}
+
 export interface User {
 	status: string | null;
 	message: string | null;
@@ -46,50 +63,15 @@ export interface Mazo {
 	// Propiedades del mazo
 }
 
-export interface CardViewState {
-	Cards: CardData[];
-	IDMazo: number | null;
-	FrontPage: string | null;
-}
-
-export interface RootState {
-	user: UserState | null;
-	mazos: Mazo[];
-	cardview: CardViewState;
-}
-
-export interface LoginSignupProps {
-	setShowLogin: (show: boolean) => void;
-}
-
-export interface FiltrosProps {
-	filters: FilterState;
-	setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
-}
-
-export interface MenuFiltersSetFiltersProps {
-	menu: boolean;
-	filters: FilterState;
-	setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
-}
-
-export interface MenuSetFiltersProps {
-	menu: boolean;
-	setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
-}
-
-export interface MenuFiltrosProps {
-	menu: boolean;
-	filters: FilterState;
-	setMenu: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
 export interface MazosState {
 	ID: number | any;
 	NameMazo: string;
 	User: number;
 	FrontPage: string | null;
 }
-export interface MazosProps {
-	mazos: MazosState[];
+
+export interface Option {
+	key: string;
+	text: string;
+	value: string;
 }

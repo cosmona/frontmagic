@@ -4,7 +4,8 @@ import { cardAdd, cardRemoveAll } from "../../store";
 
 import { Icon } from "semantic-ui-react";
 
-import { CardViewState, MazosProps } from "../../Helpers/Interfaces";
+import { CardViewState } from "../../Helpers/Interfaces";
+import { MazosProps } from "../../Helpers/PropsInterfaces";
 
 import {
 	FetchMazos,
@@ -14,14 +15,16 @@ import {
 
 import "./Mazos.css";
 
-function Mazos({ mazos }: MazosProps) {
+const Mazos: React.FC<MazosProps> = (props): React.JSX.Element => {
+	const { mazos } = props;
 	const dispatch = useDispatch();
 	const [cardView, setCardView] = useState<CardViewState | null>(null);
 	const [menu, setMenu] = useState<boolean>(false);
 	const IDMazo = useSelector((state: any) => state.cardview.IDMazo);
+	const user = useSelector((state: any) => state.user);
 
 	useEffect(() => {
-		FetchMazos(dispatch);
+		if (user) FetchMazos(dispatch);
 	}, []);
 
 	const handleLoadingMazo = async (IdMazo: number) => {
@@ -76,6 +79,6 @@ function Mazos({ mazos }: MazosProps) {
 			</div>
 		</div>
 	);
-}
+};
 
 export default Mazos;

@@ -1,23 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Button, ButtonProps, Input, Select } from "semantic-ui-react";
-import { MenuFiltersSetFiltersProps } from "../../Helpers/Interfaces";
+import React, { useState } from "react";
+import { Button, Input, Select } from "semantic-ui-react";
+import { MenuFiltersSetFiltersProps } from "../../Helpers/PropsInterfaces";
+import { options } from "../../Helpers/Data";
 
-const TextFilter: React.FC<MenuFiltersSetFiltersProps> = ({
-	menu,
-	filters,
-	setFilters,
-}) => {
+const TextFilter: React.FC<MenuFiltersSetFiltersProps> = (props) => {
+	const { menu, setFilters } = props;
 	const [valor, setValor] = useState("");
 	const [campo, setCampo] = useState("name");
 
-	const options = [
-		{ key: "name", text: "name", value: "name" },
-		{ key: "text", text: "text", value: "text" },
-	];
-	const handleSelectTextFilter = (
-		item: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-		data: ButtonProps
-	) => {
+	const handleSelectTextFilter = () => {
 		if (campo === "name")
 			setFilters((prevFilters: any) => ({
 				...prevFilters,
@@ -50,7 +41,7 @@ const TextFilter: React.FC<MenuFiltersSetFiltersProps> = ({
 			<Button
 				className="buttonTextFilter"
 				type="submit"
-				onClick={(item, data) => handleSelectTextFilter(item, data)}
+				onClick={handleSelectTextFilter}
 			>
 				Search
 			</Button>

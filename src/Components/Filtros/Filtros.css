@@ -8,6 +8,7 @@
 .border {
 	border: 1px solid orange;
 }
+
 .raritySection {
 	/* 	display: flex;
 	flex-direction: column;
@@ -40,7 +41,10 @@
 	display: none;
 }
 .iconLitle {
-	width: 15px;
+	width: 30px;
+}
+.menuManaIcons .iconLitle {
+	width: 22px;
 }
 .TextFilter {
 	padding: 0 0px 10px 12px;
@@ -59,10 +63,7 @@
 	flex-direction: column;
 	align-items: stretch;
 }
-.menuManaIcons {
-	margin-left: 10px;
-	height: 16px;
-}
+
 .Text {
 	max-width: 178px;
 }

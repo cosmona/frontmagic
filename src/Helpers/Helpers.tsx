@@ -6,7 +6,7 @@ import React from "react";
 import axios from "axios";
 import Nothing from "../Media/Generic.svg";
 import Artifact from "../Media/Artifact.svg";
-console.log("Nothing", Nothing);
+import { ImageGeneratorProps } from "./PropsInterfaces";
 
 //* Pasa la Carta a la derecha
 export function handleNext(
@@ -131,14 +131,11 @@ export const handleChangeSet = (
 };
 
 //* ImageGenerator
-export const ImageGenerator: React.FC<{
-	field: string;
-	img: string;
-	filters: FilterState;
-	setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
-	clase: string;
-}> = ({ field, img, filters, setFilters, clase }) => {
-	console.log("img", img);
+export const ImageGenerator: React.FC<ImageGeneratorProps> = (
+	props
+): React.JSX.Element => {
+	const { field, img, filters, setFilters, clase } = props;
+
 	return (
 		<img
 			className={filters[field] ? `${clase} border` : `${clase}`}

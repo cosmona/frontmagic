@@ -6,7 +6,7 @@ import AddButtons from "../AddButtons/AddButtons";
 import { handleNext, handleLast } from "../../Helpers/Helpers";
 import { obtenerLetras } from "../../Helpers/Helpers";
 import Swipe from "../Swipe/Swipe";
-import { FilterState, FiltrosProps } from "../../Helpers/Interfaces";
+import { MenuFiltersSetFiltersProps } from "../../Helpers/PropsInterfaces";
 
 interface Card {
 	name: string;
@@ -20,7 +20,7 @@ interface ForeignName {
 	imageUrl: string;
 }
 
-function Cartas(props: FiltrosProps) {
+function Cartas(props: MenuFiltersSetFiltersProps) {
 	const { filters, setFilters } = props;
 	const { ColorRed, ColorBlack, ColorGreen, ColorWhite, ColorBlue } = filters;
 

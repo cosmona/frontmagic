@@ -3,14 +3,14 @@ import Common from "../../Media/Common.png";
 import Uncommon from "../../Media/Uncommon.png";
 import Rare from "../../Media/Rare.png";
 import Mythic from "../../Media/Mythic.png";
-import { MenuFiltersSetFiltersProps } from "../../Helpers/Interfaces";
+import { MenuFiltersSetFiltersProps } from "../../Helpers/PropsInterfaces";
 import { ImageGenerator } from "../../Helpers/Helpers";
 
-const Rarity: React.FC<MenuFiltersSetFiltersProps> = ({
-	filters,
-	setFilters,
-	menu,
-}) => {
+const Rarity: React.FC<MenuFiltersSetFiltersProps> = (
+	props
+): React.JSX.Element => {
+	const { filters, setFilters, menu } = props;
+
 	return (
 		<div className={menu ? "raritySection" : "raritySection hide"}>
 			<div className="rarity-content">

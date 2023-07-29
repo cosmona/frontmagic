@@ -1,16 +1,10 @@
 import React from "react";
 
 import "./ModalLogin.css";
-
-interface MagicModalProps {
-	title: string;
-	show: boolean;
-	children: React.ReactNode;
-}
+import { MagicModalProps } from "../Helpers/PropsInterfaces";
 
 function MagicModal(props: MagicModalProps): React.JSX.Element {
 	const { title, show } = props;
-	console.log("showshow", show);
 
 	return (
 		<div className={`MagicModalContainer${show ? "Show" : "Hidden"}`}>

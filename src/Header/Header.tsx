@@ -1,7 +1,7 @@
 import React from "react";
 import NavbarLoginSignup from "../Login/NavbarLoginSignup";
 import { useDispatch, useSelector } from "react-redux";
-import { LoginSignupProps } from "../Helpers/Interfaces";
+import { LoginSignupProps } from "../Helpers/PropsInterfaces";
 
 import "./Header.css";
 import { LogOut } from "../Helpers/Helpers";

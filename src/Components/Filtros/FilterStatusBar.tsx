@@ -14,11 +14,13 @@ import Rare from "../../Media/Rare.png";
 import Mythic from "../../Media/Mythic.png";
 
 //* Interfaces
-import { MenuFiltrosProps } from "../../Helpers/Interfaces";
+import { MenuFiltersSetFiltersProps } from "../../Helpers/PropsInterfaces";
 //* Css
 import "./Filtros.css";
 
-const FilterStatusBar = (props: MenuFiltrosProps) => {
+const FilterStatusBar: React.FC<MenuFiltersSetFiltersProps> = (
+	props
+): React.JSX.Element => {
 	const { filters, menu, setMenu } = props;
 	const [typeImage, setTypeImage] = useState<string | undefined>(undefined);
 	const [LegalImage, setLegalImage] = useState<string | undefined>(undefined);
@@ -44,7 +46,7 @@ const FilterStatusBar = (props: MenuFiltrosProps) => {
 	return (
 		<div
 			className="desplegable"
-			onClick={() => setMenu((prevMenu: any) => !prevMenu)}
+			onClick={() => setMenu && setMenu((prevMenu: any) => !prevMenu)}
 		>
 			<div className="menuTextIcons">
 				{filters.Text && `Text: ${filters.Text}`}

@@ -7,27 +7,15 @@ import { obtenerLetras, obtenerRarity, to, from } from "../../Helpers/Helpers";
 import { useDispatch } from "react-redux";
 import { cardAddOne } from "../../store";
 import Loading from "../Loading/Loading";
-import { CardData, FilterState } from "../../Helpers/Interfaces";
+import {
+	CardData,
+	FilterState,
+	paramsInterface,
+} from "../../Helpers/Interfaces";
 import "./Deck.css";
+import { Deckprops } from "../../Helpers/PropsInterfaces";
 
-interface Deckprops {
-	status: string;
-	setStatus: React.Dispatch<React.SetStateAction<string>>;
-	filters: FilterState;
-}
-
-interface paramsInterface {
-	colorIdentity: string | null;
-	page: number;
-	pageSize: number;
-	rarity: string | null;
-	name: string | null;
-	text: string | null;
-	legalidades: string | null;
-	types: string | null;
-}
-
-function Deck(props: Deckprops) {
+const Deck: React.FC<Deckprops> = (props): React.JSX.Element => {
 	const { status, setStatus, filters } = props;
 
 	const {
@@ -83,7 +71,6 @@ function Deck(props: Deckprops) {
 			params.page = page;
 
 			const response = await axios.get(url, { params });
-			console.log("response", response);
 			setCards(response.data.cards);
 			setStatus("Cargado");
 		} catch (error) {
@@ -134,30 +121,8 @@ function Deck(props: Deckprops) {
 		return objeto;
 	}; */
 
-	const handleAddStore = ({
-		name,
-		imageUrl,
-		id,
-		manaCost,
-		originalType,
-		rarity,
-		types,
-		subtypes,
-		originalText,
-	}: CardData) => {
-		dispatch(
-			cardAddOne({
-				name,
-				imageUrl,
-				id,
-				manaCost,
-				originalType,
-				rarity,
-				types,
-				subtypes,
-				originalText,
-			})
-		);
+	const handleAddStore = (props: CardData) => {
+		dispatch(cardAddOne(props));
 	};
 
 	const bind = useDrag(
@@ -186,7 +151,6 @@ function Deck(props: Deckprops) {
 				const scale = down ? 1.1 : 1;
 
 				//* Si pasa a la derecha lo añade a la store
-				console.log("cards[index]", x);
 				if (x >= window.innerWidth && isGone) {
 					handleAddStore(cards[index]);
 					/* 	setTimeout(() => {
@@ -258,6 +222,6 @@ function Deck(props: Deckprops) {
 			)}
 		</>
 	);
-}
+};
 
 export default Deck;
