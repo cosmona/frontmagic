@@ -70,8 +70,6 @@ function MazoConstructor({ cardView, menu, setMenu }: MazoConstructorProps) {
 						Authorization: token,
 					},
 					body: JSON.stringify({
-						email: "inakipf@gmail.com",
-						password: "123456789",
 						NameMazo: "222sasa",
 						User: 1,
 						FrontPage: cardView.FrontPage,
