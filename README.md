@@ -1,70 +1,120 @@
-# Getting Started with Create React App
+# FrontMagic
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Frontend en React para **descubrir cartas de Magic: The Gathering deslizándolas, al estilo Tinder**, y construir tus propios mazos con ellas.
 
-## Available Scripts
+Las cartas se obtienen de la API pública [magicthegathering.io](https://docs.magicthegathering.io/). Los usuarios y los mazos se guardan en el backend [**apimagic**](https://github.com/cosmona/apimagic).
 
-In the project directory, you can run:
+> 🚧 Proyecto en desarrollo.
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## ✨ Funcionalidades
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Swipe de cartas**: arrastra una carta a la derecha para añadirla al mazo que estás construyendo, o a la izquierda para descartarla. Cuando se acaban las cartas de la página, se carga la siguiente automáticamente.
+- **Filtros de búsqueda**:
+  - Identidad de color (⚪ blanco, 🔵 azul, ⚫ negro, 🔴 rojo, 🟢 verde)
+  - Rareza (común, infrecuente, rara, mítica)
+  - Nombre y texto de la carta
+  - Tipo de carta (cargados dinámicamente desde la API)
+  - Legalidad por formato
+- **Constructor de mazos**: panel inferior desplegable con las cartas elegidas, desde donde puedes guardar o borrar el mazo.
+- **Mis mazos**: listado de los mazos guardados del usuario.
+- **Login de usuario** con token, que se envía en la cabecera `Authorization` al backend.
+- **Persistencia local**: el estado de Redux (sesión, mazos y carta en vista) se guarda en `localStorage`, así que no se pierde al recargar.
 
-### `npm test`
+## 🛠️ Tecnologías
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| Área | Herramientas |
+| --- | --- |
+| UI | React 18, TypeScript, Semantic UI React, Font Awesome, Sass |
+| Estado | Redux Toolkit, React Redux, redux-localstorage-simple |
+| Animaciones y gestos | @react-spring/web, react-use-gesture |
+| Peticiones HTTP | axios, fetch |
+| Tooling | Create React App (`react-scripts` 5), Babel |
 
-### `npm run build`
+## 🚀 Puesta en marcha
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Requisitos
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- [Node.js](https://nodejs.org/) 16 o superior y npm
+- El backend [apimagic](https://github.com/cosmona/apimagic) en marcha, para el login y los mazos (para buscar cartas no hace falta)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Instalación
 
-### `npm run eject`
+```bash
+git clone https://github.com/cosmona/frontmagic.git
+cd frontmagic
+npm install
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Configuración
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Crea un archivo `.env` en la raíz con el puerto donde escucha el backend:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```env
+REACT_APP_PORT=3001
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+> ⚠️ Ahora mismo la IP del backend está escrita a mano en el código (`http://192.168.0.21`). Si tu backend corre en otra máquina o en `localhost`, cámbiala en estos archivos:
+> - `src/Login/Login.tsx`
+> - `src/Helpers/Helpers.tsx`
+> - `src/Components/MazoConstructor/MazoConstructor.tsx`
 
-## Learn More
+### Arrancar
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+La app se abre en [http://localhost:3000](http://localhost:3000).
 
-### Code Splitting
+## 📜 Scripts
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+| Comando | Qué hace |
+| --- | --- |
+| `npm start` | Arranca el servidor de desarrollo con recarga en caliente |
+| `npm run build` | Genera la versión de producción en `build/` |
+| `npm test` | Lanza los tests con Jest en modo *watch* |
 
-### Analyzing the Bundle Size
+## 📁 Estructura del proyecto
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```
+src/
+├── App.tsx                  # Layout principal: header, filtros, mazos, deck y constructor
+├── store.ts                 # Store de Redux: slices user, mazos y cardview
+├── Header/                  # Cabecera con login / logout
+├── Login/                   # Formulario y modal de inicio de sesión
+├── Components/
+│   ├── Cartas/              # Deck de cartas con swipe (react-spring + gestos)
+│   ├── Filtros/             # Filtros por color, rareza, tipo, texto y legalidad
+│   ├── MazoConstructor/     # Panel para construir, guardar y borrar mazos
+│   ├── Mazos/               # Listado de mazos del usuario
+│   ├── Swipe/               # Componente de swipe
+│   └── Loading/             # Indicador de carga
+├── Helpers/                 # Funciones auxiliares, interfaces y tipos de TypeScript
+├── hooks/                   # Hooks de peticiones (useApi, useFetch) y useLocalStorage
+└── Media/                   # Imágenes, iconos de rareza y símbolos de maná
+```
 
-### Making a Progressive Web App
+## 🔌 Endpoints del backend usados
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+| Método | Ruta | Uso |
+| --- | --- | --- |
+| `POST` | `/users/login/` | Iniciar sesión y obtener el token |
+| `GET` | `/getmazos/` | Listar los mazos del usuario |
+| `GET` | `/getmazos/:id/` | Obtener un mazo concreto |
+| `POST` | `/mazos/` | Guardar un mazo nuevo |
+| `DELETE` | `/deletemazo/:id/` | Borrar un mazo |
 
-### Advanced Configuration
+## 🗺️ Pendiente
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- [ ] Actualizar un mazo existente (ahora solo se pueden crear)
+- [ ] Poner nombre a los mazos desde la interfaz
+- [ ] Llevar la URL del backend a una variable de entorno
+- [ ] Registro de usuarios
 
-### Deployment
+## 🙏 Créditos
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- Datos de las cartas: [magicthegathering.io](https://magicthegathering.io/)
+- Iconos de expansiones: [Keyrune](https://keyrune.andrewgioia.com/)
+- Magic: The Gathering es una marca registrada de Wizards of the Coast. Este es un proyecto personal sin afiliación oficial.
